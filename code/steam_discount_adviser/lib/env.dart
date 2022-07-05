@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
 final String getAllGamesApi =
-    "http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json";
+    "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
 final String getGameDetailsFromIdApi =
     "http://store.steampowered.com/api/appdetails";

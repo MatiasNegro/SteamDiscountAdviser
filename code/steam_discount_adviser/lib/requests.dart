@@ -1,17 +1,20 @@
 import 'dart:convert';
 import 'dart:core';
-import 'package:flutter/material.dart';
-import 'package:dio2/dio2.dart';
+import 'package:dio/dio.dart';
 import 'package:steam_discount_adviser/env.dart';
 
 class SteamRequest {
   //Not tested yet
-  Future<List<Map>> getAllGames() async {
-    var response = await Dio().get(getAllGamesApi);
-    late List<Map> toReturn = [];
+  Future<List> getAllGames() async {
+    var dio = Dio();
+    var response = await dio.get(getAllGamesApi);
+    late var toReturn;
     //Viene restituita una stringa
-    var data = json.decode(response.data);
-    toReturn = response.data["applsit"]["apps"];
+    var data = response.data;
+    var appList = data["applist"];
+    toReturn = appList["apps"];
+    print(toReturn.runtimeType);
+    //print(toReturn[5]);
     return toReturn;
   }
 
