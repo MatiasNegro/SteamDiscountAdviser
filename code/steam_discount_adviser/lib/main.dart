@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:steam_discount_adviser/allGamesListBuilder.dart';
+import 'package:steam_discount_adviser/env.dart';
 
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'Flutter Code Sample';
+  static const String _title = 'Steam Discount Adviser';
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class MyStatelessWidget extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: <Widget>[
+          //LEFT COLUMN
           Expanded(
             flex: 3,
             child: Container(
@@ -45,8 +48,10 @@ class MyStatelessWidget extends StatelessWidget {
             color: Colors.black,
           ),
           Expanded(
+            //RIGHT COLUMN
             flex: 7,
             child: Container(
+              child: TileList(),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.blueGrey,
