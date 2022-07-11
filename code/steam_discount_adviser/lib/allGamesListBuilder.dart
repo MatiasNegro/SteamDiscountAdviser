@@ -14,16 +14,21 @@ class _TileListState extends State<TileList> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.blueGrey,
       ),
       child: Scaffold(
         appBar: AppBar(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            backgroundColor: Colors.blueGrey[200],
             title: TextField(
-          decoration: InputDecoration(
-              border: UnderlineInputBorder(), labelText: "Miao"),
-        )),
+              decoration: InputDecoration(
+                  border: UnderlineInputBorder(), labelText: "Miao"),
+            )),
         backgroundColor: Colors.transparent,
         body: FutureBuilder(
           future: data = SteamRequest().getAllGames(),
@@ -41,6 +46,7 @@ class _TileListState extends State<TileList> {
               );
             } else {
               return Container(
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: Center(
                       child: CircularProgressIndicator(
                     color: Colors.black,
