@@ -10,6 +10,7 @@ class TileList extends StatefulWidget {
 
 class _TileListState extends State<TileList> {
   late var data;
+  late var names;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,10 @@ class _TileListState extends State<TileList> {
                       itemBuilder: ((BuildContext context, int index) {
                         return Card(
                           color: Colors.blueGrey[300],
-                          child: ListTile(title: Text(data[index].toString())),
+                          child: ListTile(
+                            title: Text(data[index+ 19]["name"].toString()),
+                            onTap: () {},
+                          ),
                         );
                       }),
                     );
