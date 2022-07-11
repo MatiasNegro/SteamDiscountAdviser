@@ -20,43 +20,68 @@ class _TileListState extends State<TileList> {
         color: Colors.blueGrey,
       ),
       child: Scaffold(
-        appBar: AppBar(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            backgroundColor: Colors.blueGrey[200],
-            title: TextField(
-              decoration: InputDecoration(
-                  border: UnderlineInputBorder(), labelText: "Miao"),
-            )),
         backgroundColor: Colors.transparent,
-        body: FutureBuilder(
-          future: data = SteamRequest().getAllGames(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              data = snapshot.data;
-              return ListView.builder(
-                itemCount: data.length == 0 ? 0 : data.length,
-                itemBuilder: ((BuildContext context, int index) {
-                  return Card(
-                    color: Colors.blueGrey[300],
-                    child: ListTile(title: Text(data[index].toString())),
-                  );
-                }),
-              );
-            } else {
-              return Container(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: Center(
-                      child: CircularProgressIndicator(
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: TextField(
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: "Search game",
+                  filled: true,
+                  fillColor: Colors.grey[400],
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  suffixIcon: Icon(
+                    Icons.search,
                     color: Colors.black,
-                  )),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.blueGrey,
-                  ));
-            }
-          },
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: FutureBuilder(
+                future: data = SteamRequest().getAllGames(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    data = snapshot.data;
+                    return ListView.builder(
+                      itemCount: data.length == 0 ? 0 : data.length,
+                      itemBuilder: ((BuildContext context, int index) {
+                        return Card(
+                          color: Colors.blueGrey[300],
+                          child: ListTile(title: Text(data[index].toString())),
+                        );
+                      }),
+                    );
+                  } else {
+                    return Container(
+                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.blueGrey,
+                        ));
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
