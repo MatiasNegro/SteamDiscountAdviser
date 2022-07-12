@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:steam_discount_adviser/env.dart';
+import 'package:test/expect.dart';
 
 class SteamRequest {
   var dio = Dio();
@@ -14,6 +15,7 @@ class SteamRequest {
     var data = response.data as Map;
     var appList = data["applist"];
     toReturn = appList["apps"];
+    (toReturn as List).removeWhere((element) => element["name"].isEmpty);
     return toReturn;
   }
 

@@ -11,6 +11,36 @@ class TileList extends StatefulWidget {
 class _TileListState extends State<TileList> {
   late var data;
   late var names;
+  late var dataBackup;
+  List results = [];
+  bool flag = false;
+
+  @override
+  void initState() {
+    super.initState();
+    data = SteamRequest().getAllGames();
+  }
+
+  void _runFilter(String enteredKeyword) {
+    if (data != []) {
+      dataBackup = data;
+      results = data;
+      if (enteredKeyword.isEmpty) {
+        data = dataBackup;
+      } else {
+        results.removeWhere((element) => (!element["name"] as String)
+            .toLowerCase()
+            .contains(enteredKeyword));
+        // we use the toLowerCase() method to make it case-insensitive
+      }
+
+      // Refresh the UI
+      flag = true;
+      setState(() {
+        data = results;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +61,9 @@ class _TileListState extends State<TileList> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: TextField(
+                onChanged: (value) {
+                  _runFilter(value);
+                },
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   hintText: "Search game",
@@ -53,42 +86,49 @@ class _TileListState extends State<TileList> {
             ),
             SizedBox(height: 10),
             Expanded(
-              child: FutureBuilder(
-                future: data = SteamRequest().getAllGames(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    data = snapshot.data;
-                    return ListView.builder(
-                      itemCount: data.length == 0 ? 0 : data.length,
-                      itemBuilder: ((BuildContext context, int index) {
-                        return Card(
-                          color: Colors.blueGrey[300],
-                          child: ListTile(
-                            title: Text(data[index + 19]["name"].toString()),
-                            onTap: () {
-                              var id = data[index + 19]["appid"];
-                              var name = data[index + 19]["name"];
-                              print("ho premuto $name");
-                            },
-                          ),
-                        );
-                      }),
-                    );
-                  } else {
-                    return Container(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.black,
-                        )),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blueGrey,
-                        ));
-                  }
-                },
-              ),
-            ),
+              child: !flag
+                  ? FutureBuilder(
+                      future: data,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          data = snapshot.data;
+                          return ListView.builder(
+                            itemCount: data.length == 0 ? 0 : data.length,
+                            itemBuilder: ((BuildContext context, int index) {
+                              return Card(
+                                color: Colors.blueGrey[300],
+                                child: ListTile(
+                                  title: Text(data[index]["name"]),
+                                  onTap: () {
+                                    var id = data[index]["appid"];
+                                    var name = data[index]["name"];
+                                    print("ho premuto $name");
+                                  },
+                                ),
+                              );
+                            }),
+                          );
+                        } else {
+                          return Container(
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.blueGrey,
+                              ));
+                        }
+                      },
+                    )
+                  : ListView.builder(
+                      itemCount: (data as List).length,
+                      itemBuilder: (context, index) {
+                        return Card(child: Text(data[index]["name"]));
+                      },
+                    ),
+            )
           ],
         ),
       ),
