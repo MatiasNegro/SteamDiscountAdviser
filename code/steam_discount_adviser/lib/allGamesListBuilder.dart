@@ -64,8 +64,12 @@ class _TileListState extends State<TileList> {
                         return Card(
                           color: Colors.blueGrey[300],
                           child: ListTile(
-                            title: Text(data[index+ 19]["name"].toString()),
-                            onTap: () {},
+                            title: Text(data[index + 19]["name"].toString()),
+                            onTap: () {
+                              var id = data[index + 19]["appid"];
+                              var name = data[index + 19]["name"];
+                              print("ho premuto $name");
+                            },
                           ),
                         );
                       }),
