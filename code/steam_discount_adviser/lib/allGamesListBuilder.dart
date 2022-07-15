@@ -19,16 +19,22 @@ class _TileListState extends State<TileList> {
   void initState() {
     super.initState();
     data = SteamRequest().getAllGames();
+    setBackUp();
   }
 
+  void setBackUp() async {}
+
   void _runFilter(String enteredKeyword) {
+    if (!flag) {
+      dataBackup = List.from(data);
+    }
+    results = List.from(dataBackup);
     if (data != []) {
-      dataBackup = data;
-      results = data;
+      results = List.from(dataBackup);
       if (enteredKeyword.isEmpty) {
-        data = dataBackup;
+        results = List.from(dataBackup);
       } else {
-        results.removeWhere((element) => (!element["name"] as String)
+        results.removeWhere((element) => !(element["name"] as String)
             .toLowerCase()
             .contains(enteredKeyword));
         // we use the toLowerCase() method to make it case-insensitive
@@ -37,7 +43,7 @@ class _TileListState extends State<TileList> {
       // Refresh the UI
       flag = true;
       setState(() {
-        data = results;
+        data = List.from(results);
       });
     }
   }
@@ -125,7 +131,17 @@ class _TileListState extends State<TileList> {
                   : ListView.builder(
                       itemCount: (data as List).length,
                       itemBuilder: (context, index) {
-                        return Card(child: Text(data[index]["name"]));
+                        return Card(
+                          color: Colors.blueGrey[300],
+                          child: ListTile(
+                            title: Text(data[index]["name"]),
+                            onTap: () {
+                              var id = data[index]["appid"];
+                              var name = data[index]["name"];
+                              print("ho premuto $name");
+                            },
+                          ),
+                        );
                       },
                     ),
             )
