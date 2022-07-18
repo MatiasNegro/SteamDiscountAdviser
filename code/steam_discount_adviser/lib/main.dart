@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/env.dart';
 import 'package:local_notifier/local_notifier.dart';
+import 'package:steam_discount_adviser/gameList.dart';
 
-void main() async {
+void main() {
   runApp(const MyApp());
+  var gameList = GameList();
 }
 
 class MyApp extends StatelessWidget {
@@ -37,6 +39,7 @@ class MyStatelessWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Container(
+              //child: Text("miao"),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.blueGrey,

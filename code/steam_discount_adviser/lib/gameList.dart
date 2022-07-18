@@ -1,39 +1,32 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 class GameList {
-  String fileName = "selectedGames.txt";
+  String fileName = "./assets/selectedGames.json";
   late List<Game> selectedGames = [];
-  late var myFile = () async {
-    if (await checkExistance()) {
-      return File(fileName);
-    }
-    var tempFile = File(fileName).create();
-    return tempFile;
-  };
-  
-  GameList(){
-    
+
+  GameList() {
+    fillList();
   }
 
-  Future<bool> checkExistance() async {
-    var tempFile;
-    if (tempFile(fileName).exists()) return true;
-    return false;
+  void fillList() async {
+    var dataString = await rootBundle.loadString(fileName);
+    var data = jsonDecode(dataString);
+    List dataList = data["games"];
+    for (var item in dataList) {
+      selectedGames.add(new Game(item["code"]));
+    }
+    print(selectedGames[0].getCode() + " " + selectedGames[1].getCode());
   }
 }
 
 class Game {
-  late String name;
   late String code;
 
-  Game(name, code) {
-    this.name = name;
-    this.code = code;
-  }
-
-  String getName() {
-    return this.name;
+  Game(code) {
+    this.code = code.toString();
   }
 
   String getCode() {
