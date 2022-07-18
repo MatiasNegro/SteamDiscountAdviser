@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_notifier/local_notifier.dart';
 import 'package:steam_discount_adviser/requests.dart';
 
 class TileList extends StatefulWidget {
@@ -48,8 +49,21 @@ class _TileListState extends State<TileList> {
     }
   }
 
+  void setPermission() async {
+    await localNotifier.setup(
+      appName: 'local_notifier_example',
+      // The parameter shortcutPolicy only works on Windows
+      shortcutPolicy: ShortcutPolicy.requireCreate,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    //Notification test -> to remove leater
+    LocalNotification? example_notification =
+        LocalNotification(title: "SONO UNA NOTIFICA");
+    setPermission();
+    //end of notification test
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -108,7 +122,7 @@ class _TileListState extends State<TileList> {
                                   onTap: () {
                                     var id = data[index]["appid"];
                                     var name = data[index]["name"];
-                                    print("ho premuto $name");
+                                    example_notification.show();
                                   },
                                 ),
                               );
@@ -138,7 +152,7 @@ class _TileListState extends State<TileList> {
                             onTap: () {
                               var id = data[index]["appid"];
                               var name = data[index]["name"];
-                              print("ho premuto $name");
+                              example_notification.show();
                             },
                           ),
                         );

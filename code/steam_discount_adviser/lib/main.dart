@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/env.dart';
+import 'package:local_notifier/local_notifier.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
