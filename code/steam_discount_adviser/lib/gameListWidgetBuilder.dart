@@ -63,6 +63,22 @@ class _SelectedGamesState extends State<SelectedGames> {
                           onTap: () {
                             var id = data[index].getId();
                             var name = data[index].getName();
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                      child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    child: Container(
+                                      height: 800.0,
+                                      width: double.infinity,
+                                      color: Colors.blue,
+                                      child: Center(
+                                        child: new Text("Hi modal sheet"),
+                                      ),
+                                    ),
+                                  ));
+                                });
                           },
                         ),
                       );
