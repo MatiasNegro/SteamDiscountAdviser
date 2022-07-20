@@ -20,10 +20,7 @@ class _TileListState extends State<TileList> {
   void initState() {
     super.initState();
     data = SteamRequest().getAllGames();
-    setBackUp();
   }
-
-  void setBackUp() async {}
 
   void _runFilter(String enteredKeyword) {
     if (!flag) {
@@ -51,7 +48,7 @@ class _TileListState extends State<TileList> {
 
   void setPermission() async {
     await localNotifier.setup(
-      appName: 'local_notifier_example',
+      appName: 'Steam Discount Dumpster',
       // The parameter shortcutPolicy only works on Windows
       shortcutPolicy: ShortcutPolicy.requireCreate,
     );
@@ -113,6 +110,7 @@ class _TileListState extends State<TileList> {
                         if (snapshot.hasData) {
                           data = snapshot.data;
                           return ListView.builder(
+                            controller: ScrollController(),
                             itemCount: data.length == 0 ? 0 : data.length,
                             itemBuilder: ((BuildContext context, int index) {
                               return Card(
@@ -143,6 +141,7 @@ class _TileListState extends State<TileList> {
                       },
                     )
                   : ListView.builder(
+                      controller: ScrollController(),
                       itemCount: (data as List).length,
                       itemBuilder: (context, index) {
                         return Card(
