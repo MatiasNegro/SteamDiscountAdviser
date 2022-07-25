@@ -35,8 +35,10 @@ class SteamRequest {
     var data = jsonDecode(dataString);
     var toReturn = [];
     List dataList = data["games"];
-    dataList.forEach((item) {
-      toReturn.add(new Game(item["code"], item["name"]));
+    dataList.forEach((item) async {
+      var info = await getGameDetails(item["code"]).then((value) {
+        toReturn.add(new Game(item["code"], item["name"], value));
+      });
     });
     return toReturn;
   }
