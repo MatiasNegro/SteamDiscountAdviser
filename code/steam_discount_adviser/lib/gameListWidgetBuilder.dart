@@ -52,6 +52,8 @@ class _SelectedGamesState extends State<SelectedGames> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   data = snapshot.data;
+
+                  //print(data.toString());
                   return ListView.builder(
                     controller: ScrollController(),
                     itemCount: data.length == 0 ? 0 : data.length,
@@ -63,6 +65,7 @@ class _SelectedGamesState extends State<SelectedGames> {
                           onTap: () {
                             var id = data[index].getId();
                             var name = data[index].getName();
+                            print(data[index].price);
                             showDialog(
                                 context: context,
                                 builder: (context) {
