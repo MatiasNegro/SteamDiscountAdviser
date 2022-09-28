@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/Game.dart';
 import 'dart:async';
 import 'package:steam_discount_adviser/requests.dart';
+import 'package:steam_discount_adviser/providers/dataProvider.dart';
 
 class SelectedGames extends StatefulWidget {
   SelectedGames({Key? key}) : super(key: key);
@@ -60,24 +62,60 @@ class _SelectedGamesState extends State<SelectedGames> {
                         color: Colors.blueGrey[300],
                         child: ListTile(
                           title: Text(data[index].getName()),
-                          onTap: () {
+                          onTap: () async {
                             var id = data[index].getId();
                             var name = data[index].getName();
+                            var gameInfo =
+                                await SteamRequest().getGameDetails(550);
                             showDialog(
                                 context: context,
                                 builder: (context) {
                                   return Dialog(
-                                      child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    child: Container(
-                                      height: 800.0,
-                                      width: double.infinity,
-                                      color: Colors.blue,
-                                      child: Center(
-                                        child: new Text("Hi modal sheet"),
+                                      backgroundColor: Colors.blueGrey[100],
+                                      elevation: 8.0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
-                                    ),
-                                  ));
+                                      child: Container(
+                                          width: 100.0,
+                                          height: 100.0,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 10, 10, 10),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blueGrey[200],
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Text(
+                                                  name,
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text("Prezzo: " +
+                                                      gameInfo["price_overview"]
+                                                          ["final_formatted"]),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text("Sconto: " +
+                                                      gameInfo["price_overview"]
+                                                              [
+                                                              "discount_percent"]
+                                                          .toString())
+                                                ],
+                                              ),
+                                            ],
+                                          )));
                                 });
                           },
                         ),

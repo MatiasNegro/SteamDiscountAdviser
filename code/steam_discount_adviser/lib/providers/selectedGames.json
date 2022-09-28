@@ -1,0 +1,11 @@
+{
+    "games": [{
+            "code": 660010,
+            "name": "pippo"
+        },
+        {
+            "code": 101010,
+            "name": "baudo"
+        }
+    ]
+}

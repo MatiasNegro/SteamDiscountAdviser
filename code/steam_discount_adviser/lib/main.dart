@@ -1,12 +1,20 @@
+import 'dart:async';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/env.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:steam_discount_adviser/Game.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
+import 'package:steam_discount_adviser/providers/dataProvider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create:(_)=>GameList())],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +38,7 @@ class MyStatelessWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late var data;
     return Container(
       color: Colors.blueGrey[900],
       padding: const EdgeInsets.all(10),
