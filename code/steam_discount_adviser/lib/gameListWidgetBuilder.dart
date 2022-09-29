@@ -40,11 +40,16 @@ class _SelectedGamesState extends State<SelectedGames> {
               height: 10,
             ),
             //Display the logo of the application
-            const Center(
-              child: Image(
-                image: AssetImage('./assets/images/temp_logo.png'),
-                height: 250,
-                width: 250,
+            Center(
+              child: Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage('./assets/images/logo.png'),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 10),
