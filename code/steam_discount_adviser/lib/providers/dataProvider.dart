@@ -4,12 +4,13 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class GameList with ChangeNotifier {
-  late var _data = takeList();
+  late final List _data = takeList() as List;
+  bool hasChanged = false;
 
   get gameList => _data;
 
-  List takeList() {
-    List toReturn = SteamRequest().getSelectedGames as List;
+  Future<List> takeList() async {
+    List toReturn = await SteamRequest().getSelectedGames as List;
     return toReturn;
   }
 
@@ -25,7 +26,9 @@ class GameList with ChangeNotifier {
       version: 1,
     );
     await database.insert("GAMES", {"ID": item["id"], "NAME": item["name"]});
+    hasChanged = true;
     notifyListeners();
+    hasChanged = false;
   }
 
   removeFromGameList(var item) {
@@ -36,5 +39,11 @@ class GameList with ChangeNotifier {
   dropGameList() {
     //...
     notifyListeners();
+  }
+
+  notifyLeftBuilder() {
+    hasChanged = true;
+    notifyListeners();
+    hasChanged = false;
   }
 }

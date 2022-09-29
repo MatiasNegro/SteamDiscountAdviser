@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:steam_discount_adviser/allGamesListBuilder.dart';
-import 'package:steam_discount_adviser/Game.dart';
-import 'dart:async';
+import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/requests.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
 
@@ -14,11 +11,12 @@ class SelectedGames extends StatefulWidget {
 }
 
 class _SelectedGamesState extends State<SelectedGames> {
+  /// [data] is the result of the db query
   late var data;
+  bool isLoading = true;
 
   @override
   void initState() {
-    data = SteamRequest().getSelectedGames();
     super.initState();
   }
 
@@ -37,38 +35,50 @@ class _SelectedGamesState extends State<SelectedGames> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            //Sized boxes are there just make space
+            const SizedBox(
               height: 10,
             ),
-            Center(
+            //Display the logo of the application
+            const Center(
               child: Image(
                 image: AssetImage('./assets/images/temp_logo.png'),
                 height: 250,
                 width: 250,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
+                //Creation of the list.
                 child: FutureBuilder(
-              future: data,
+              ///Retrive of the [data] with db interrogation
+              future: data = SteamRequest().getSelectedGames(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  isLoading = false;
                   data = snapshot.data;
-
-                  //print(data.toString());
                   return ListView.builder(
                     controller: ScrollController(),
-                    itemCount: data.length == 0 ? 0 : data.length,
+                    itemCount: data.length,
                     itemBuilder: ((BuildContext context, int index) {
                       return Card(
                         color: Colors.blueGrey[300],
+                        //Tiles creation
                         child: ListTile(
-                          title: Text(data[index].getName()),
+                          title: Text(data[index]["NAME"]),
                           onTap: () async {
-                            var id = data[index].getId();
-                            var name = data[index].getName();
-                            var gameInfo =
-                                await SteamRequest().getGameDetails(550);
+                            var id = data[index]["ID"];
+                            var name = data[index]["NAME"];
+                            // ignore: prefer_typing_uninitialized_variables
+                            var price;
+                            //Retriving the game price informations
+                            await SteamRequest()
+                                .getGameDetails(id)
+                                .then((value) {
+                              price =
+                                  value["price_overview"]["final_formatted"];
+                            });
+                            //Pop-up dialog on tile click
                             showDialog(
                                 context: context,
                                 builder: (context) {
@@ -87,8 +97,9 @@ class _SelectedGamesState extends State<SelectedGames> {
                                                 width: MediaQuery.of(context)
                                                     .size
                                                     .width,
-                                                padding: EdgeInsets.fromLTRB(
-                                                    10, 10, 10, 10),
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 10, 10, 10),
                                                 decoration: BoxDecoration(
                                                   color: Colors.blueGrey[200],
                                                   borderRadius:
@@ -96,24 +107,20 @@ class _SelectedGamesState extends State<SelectedGames> {
                                                 ),
                                                 child: Text(
                                                   name,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 18,
                                                   ),
                                                 ),
                                               ),
                                               Row(
                                                 children: [
-                                                  Text("Prezzo: " +
-                                                      gameInfo["price_overview"]
-                                                          ["final_formatted"]),
-                                                  SizedBox(
+                                                  // ignore: prefer_interpolation_to_compose_strings
+                                                  Text("Prezzo: " + price),
+                                                  const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Text("Sconto: " +
-                                                      gameInfo["price_overview"]
-                                                              [
-                                                              "discount_percent"]
-                                                          .toString())
+                                                  // ignore: prefer_interpolation_to_compose_strings
+                                                  Text("Sconto: " + price)
                                                 ],
                                               ),
                                             ],
@@ -125,19 +132,21 @@ class _SelectedGamesState extends State<SelectedGames> {
                     }),
                   );
                 } else {
+                  //If problems with the database are found, is returned a progress indicator while the app
+                  //"searches" a solution
                   return Container(
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      child: Center(
-                          child: CircularProgressIndicator(
-                        color: Colors.black,
-                      )),
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.blueGrey,
-                      ));
+                      ),
+                      child: const Center(
+                          child: CircularProgressIndicator(
+                        color: Colors.black,
+                      )));
                 }
               },
-            ))
+            )),
           ],
         ),
       ),

@@ -1,18 +1,12 @@
-import 'dart:async';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
-import 'package:steam_discount_adviser/env.dart';
-import 'package:local_notifier/local_notifier.dart';
-import 'package:steam_discount_adviser/Game.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create:(_)=>GameList())],
+    providers: [ChangeNotifierProvider(create: (_) => GameList())],
     child: const MyApp(),
   ));
 }
@@ -24,10 +18,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: _title,
       home: Scaffold(
-        body: const MyStatelessWidget(),
+        body: MyStatelessWidget(),
       ),
     );
   }
@@ -38,7 +32,8 @@ class MyStatelessWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late var data;
+    //One page application, the window get divided in two sections, the left occupies the 30% of the window
+    //and the right the 70% => $flex=3 and $flex = 7
     return Container(
       color: Colors.blueGrey[900],
       padding: const EdgeInsets.all(10),
@@ -48,13 +43,14 @@ class MyStatelessWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Container(
-              child: SelectedGames(),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.blueGrey,
               ),
+              child: SelectedGames(),
             ),
           ),
+          //The divider
           const VerticalDivider(
             width: 10,
             thickness: 1,
@@ -66,11 +62,11 @@ class MyStatelessWidget extends StatelessWidget {
             //RIGHT COLUMN
             flex: 7,
             child: Container(
-              child: TileList(),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.blueGrey,
               ),
+              child: TileList(),
             ),
           ),
         ],

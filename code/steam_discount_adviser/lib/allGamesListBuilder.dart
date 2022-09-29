@@ -1,11 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:io/io.dart';
+//
+// DO-NOT REMOVE THE UNUSED IMPORTS, FLUTTER SAYS WRONG
+//
 import 'package:flutter/material.dart';
 import 'package:local_notifier/local_notifier.dart';
-import 'package:steam_discount_adviser/Game.dart';
+import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/requests.dart';
-import 'package:steam_discount_adviser/gameListWidgetBuilder.dart' as games;
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,8 +19,12 @@ class TileList extends StatefulWidget {
 }
 
 class _TileListState extends State<TileList> {
+  ///[data] will be the list of the steam games library
+  // ignore: prefer_typing_uninitialized_variables
   late var data;
-  late var names;
+
+  /// [dataBackup] is needed to make a searchable bar
+  // ignore: prefer_typing_uninitialized_variables
   late var dataBackup;
   List results = [];
   bool flag = false;
@@ -32,8 +35,10 @@ class _TileListState extends State<TileList> {
     data = SteamRequest().getAllGames();
   }
 
+  ///[_runFilter(String enteredKeyword)] is the business logic of the searchbar
   void _runFilter(String enteredKeyword) {
     if (!flag) {
+      ///If is the first search, the data is saved in case all keywords were deleted
       dataBackup = List.from(data);
     }
     results = List.from(dataBackup);
@@ -54,20 +59,6 @@ class _TileListState extends State<TileList> {
         data = List.from(results);
       });
     }
-  }
-
-  void addGameToList(id, name) async {
-    String path = await getDatabasesPath();
-    final Database database = await openDatabase(
-      join(path, 'selectedGames.db'),
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT)',
-        );
-      },
-      version: 1,
-    );
-    await database.insert("GAMES", {"ID": id, "NAME": name});
   }
 
   @override
@@ -134,10 +125,8 @@ class _TileListState extends State<TileList> {
                                         var name = data[index]["name"];
                                         var gameInfo = await SteamRequest()
                                             .getGameDetails(id);
-                                        if (gameInfo["steam_appid"] == 80924) {
-                                          print(gameInfo);
-                                        }
                                         if (gameInfo["is_free"] == false &&
+                                            // ignore: unrelated_type_equality_checks
                                             (gameInfo["type"] == "game" ||
                                                     gameInfo["type"]) ==
                                                 "dlc") {
@@ -154,7 +143,7 @@ class _TileListState extends State<TileList> {
                                                           BorderRadius.circular(
                                                               20),
                                                     ),
-                                                    child: Container(
+                                                    child: SizedBox(
                                                         width: 100.0,
                                                         height: 100.0,
                                                         child: Column(
@@ -166,12 +155,12 @@ class _TileListState extends State<TileList> {
                                                                       .size
                                                                       .width,
                                                               padding:
-                                                                  EdgeInsets
-                                                                      .fromLTRB(
-                                                                          10,
-                                                                          10,
-                                                                          10,
-                                                                          10),
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      10,
+                                                                      10,
+                                                                      10,
+                                                                      10),
                                                               decoration:
                                                                   BoxDecoration(
                                                                 color: Colors
@@ -185,32 +174,37 @@ class _TileListState extends State<TileList> {
                                                               child: Text(
                                                                 name,
                                                                 style:
-                                                                    TextStyle(
+                                                                    const TextStyle(
                                                                   fontSize: 18,
                                                                 ),
                                                               ),
                                                             ),
                                                             Row(
                                                               children: [
+                                                                // ignore: prefer_interpolation_to_compose_strings
                                                                 Text("Prezzo: " +
                                                                     gameInfo[
                                                                             "price_overview"]
                                                                         [
                                                                         "final_formatted"]),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                   width: 10,
                                                                 ),
-                                                                Text("Sconto: " +
-                                                                    gameInfo["price_overview"]
-                                                                            [
-                                                                            "discount_percent"]
-                                                                        .toString())
+                                                                Text(
+                                                                    "Sconto: ${gameInfo["price_overview"]["discount_percent"]}")
                                                               ],
                                                             ),
                                                             ElevatedButton(
                                                                 onPressed: () {
-                                                                  addGameToList(
-                                                                      id, name);
+                                                                  Map item = {
+                                                                    "id": id,
+                                                                    "name": name
+                                                                  };
+                                                                  context
+                                                                      .read<
+                                                                          GameList>()
+                                                                      .addToGameList(
+                                                                          item);
                                                                 },
                                                                 child: Text(
                                                                     "Add game to list"))
@@ -243,12 +237,12 @@ class _TileListState extends State<TileList> {
                                                                       .size
                                                                       .width,
                                                               padding:
-                                                                  EdgeInsets
-                                                                      .fromLTRB(
-                                                                          10,
-                                                                          10,
-                                                                          10,
-                                                                          10),
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      10,
+                                                                      10,
+                                                                      10,
+                                                                      10),
                                                               decoration:
                                                                   BoxDecoration(
                                                                 color: Colors
@@ -262,12 +256,12 @@ class _TileListState extends State<TileList> {
                                                               child: Text(
                                                                 name,
                                                                 style:
-                                                                    TextStyle(
+                                                                    const TextStyle(
                                                                   fontSize: 18,
                                                                 ),
                                                               ),
                                                             ),
-                                                            Center(
+                                                            const Center(
                                                               child: Text(
                                                                   "this game is free!"),
                                                             )
@@ -283,14 +277,14 @@ class _TileListState extends State<TileList> {
                             } else {
                               return Container(
                                   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                  child: Center(
-                                      child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                  )),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.blueGrey,
-                                  ));
+                                  ),
+                                  child: const Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )));
                             }
                           },
                         )
@@ -321,18 +315,20 @@ class _TileListState extends State<TileList> {
                                                 borderRadius:
                                                     BorderRadius.circular(20),
                                               ),
-                                              child: Container(
+                                              child: SizedBox(
                                                   width: 100.0,
                                                   height: 100.0,
                                                   child: Column(
                                                     children: [
                                                       Container(
+                                                        ///[MediaQuery.of()] is being used to let the window be reactive
                                                         width: MediaQuery.of(
                                                                 context)
                                                             .size
                                                             .width,
                                                         padding:
-                                                            EdgeInsets.fromLTRB(
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
                                                                 10, 10, 10, 10),
                                                         decoration:
                                                             BoxDecoration(
@@ -344,32 +340,38 @@ class _TileListState extends State<TileList> {
                                                         ),
                                                         child: Text(
                                                           name,
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 18,
                                                           ),
                                                         ),
                                                       ),
                                                       Row(
                                                         children: [
+                                                          // ignore: prefer_interpolation_to_compose_strings
                                                           Text("Prezzo: " +
                                                               gameInfo[
                                                                       "price_overview"]
                                                                   [
                                                                   "final_formatted"]),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: 10,
                                                           ),
-                                                          Text("Sconto: " +
-                                                              gameInfo["price_overview"]
-                                                                      [
-                                                                      "discount_percent"]
-                                                                  .toString()),
+                                                          Text(
+                                                              "Sconto: ${gameInfo["price_overview"]["discount_percent"]}"),
                                                           ElevatedButton(
                                                               onPressed: () {
-                                                                addGameToList(
-                                                                    id, name);
+                                                                Map item = {
+                                                                  "id": id,
+                                                                  "name": name
+                                                                };
+                                                                context
+                                                                    .read<
+                                                                        GameList>()
+                                                                    .addToGameList(
+                                                                        item);
                                                               },
-                                                              child: Text(
+                                                              child: const Text(
                                                                   "Add game to list"))
                                                         ],
                                                       ),
@@ -380,7 +382,6 @@ class _TileListState extends State<TileList> {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          print("false");
                                           return Dialog(
                                               backgroundColor:
                                                   Colors.blueGrey[100],
@@ -389,7 +390,7 @@ class _TileListState extends State<TileList> {
                                                 borderRadius:
                                                     BorderRadius.circular(20),
                                               ),
-                                              child: Container(
+                                              child: SizedBox(
                                                   width: 100.0,
                                                   height: 100.0,
                                                   child: Column(
@@ -400,7 +401,8 @@ class _TileListState extends State<TileList> {
                                                             .size
                                                             .width,
                                                         padding:
-                                                            EdgeInsets.fromLTRB(
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
                                                                 10, 10, 10, 10),
                                                         decoration:
                                                             BoxDecoration(
@@ -412,12 +414,13 @@ class _TileListState extends State<TileList> {
                                                         ),
                                                         child: Text(
                                                           name,
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 18,
                                                           ),
                                                         ),
                                                       ),
-                                                      Center(
+                                                      const Center(
                                                         child: Text(
                                                             "this game is free!"),
                                                       )

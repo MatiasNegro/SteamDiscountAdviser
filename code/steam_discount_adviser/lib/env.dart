@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-final String getAllGamesApi =
+//URL to the steam games list
+const String getAllGamesApi =
     "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
-final String getGameDetailsFromIdApi =
-    "http://store.steampowered.com/api/appdetails?appids=";
 
+//URL to the details of a given game, the courrency parameter gives the price results in euro
+const String getGameDetailsFromIdApi =
+    "http://store.steampowered.com/api/appdetails?courrency=3&appids=";

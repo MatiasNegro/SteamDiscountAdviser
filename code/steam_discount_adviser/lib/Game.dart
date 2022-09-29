@@ -11,31 +11,39 @@ class Game {
   late var selectedPrice;
   late var standardPrice;
 
-  Game(code, name, [info = null]) {
+  Game(code, name) {
     this.code = code.toString();
     this.name = name.toString();
-    this.info = info;
-    setInfo();
+    setInfo(code);
+    print("$name costa $price");
   }
 
   String getId() {
-    return this.code;
+    return code;
   }
 
   String getName() {
-    return this.name;
+    return name;
   }
 
-  void setData() {
-    this.price = info[getId()]["data"]["price_overview"]["final_formatted"];
-    this.imageUrl = info[getId()]["data"]["header_image"];
-    this.standardPrice =
-        info[getId()]["data"]["price_overview"]["initial_formatted"];
+  String getInfo() {
+    return info;
   }
 
-  void setInfo() async {
-    this.info = await SteamRequest().getGameDetails(getId());
-    print(this.info);
-    setData();
+  void setData(jsonInfo) {
+    price = jsonInfo["price_overview"]["final_formatted"];
+    imageUrl = jsonInfo["header_image"];
+    standardPrice = jsonInfo["price_overview"]["initial_formatted"];
+  }
+
+  void setInfo(code) async {
+    info = await SteamRequest().getGameDetails(code).then(
+      (value) {
+        print(value);
+        setData(value);
+        print("---");
+        return;
+      },
+    );
   }
 }
