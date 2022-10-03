@@ -19,6 +19,8 @@ class TileList extends StatefulWidget {
 }
 
 class _TileListState extends State<TileList> {
+  final textController = TextEditingController();
+
   ///[data] will be the list of the steam games library
   // ignore: prefer_typing_uninitialized_variables
   late var data;
@@ -28,6 +30,12 @@ class _TileListState extends State<TileList> {
   late var dataBackup;
   List results = [];
   bool flag = false;
+
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -144,16 +152,15 @@ class _TileListState extends State<TileList> {
                                                               20),
                                                     ),
                                                     child: SizedBox(
-                                                        width: 100.0,
-                                                        height: 100.0,
-                                                        child: Column(
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        child: Stack(
                                                           children: [
                                                             Container(
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
+                                                              width: 500,
+                                                              height: 500,
                                                               padding:
                                                                   const EdgeInsets
                                                                           .fromLTRB(
@@ -194,6 +201,7 @@ class _TileListState extends State<TileList> {
                                                                     "Sconto: ${gameInfo["price_overview"]["discount_percent"]}")
                                                               ],
                                                             ),
+                                                            //Button unther row with text
                                                             ElevatedButton(
                                                                 onPressed: () {
                                                                   Map item = {
@@ -316,8 +324,8 @@ class _TileListState extends State<TileList> {
                                                     BorderRadius.circular(20),
                                               ),
                                               child: SizedBox(
-                                                  width: 100.0,
-                                                  height: 100.0,
+                                                  width: 300.0,
+                                                  height: 300.0,
                                                   child: Column(
                                                     children: [
                                                       Container(
@@ -359,22 +367,72 @@ class _TileListState extends State<TileList> {
                                                           ),
                                                           Text(
                                                               "Sconto: ${gameInfo["price_overview"]["discount_percent"]}"),
-                                                          ElevatedButton(
-                                                              onPressed: () {
-                                                                Map item = {
-                                                                  "id": id,
-                                                                  "name": name
-                                                                };
-                                                                context
-                                                                    .read<
-                                                                        GameList>()
-                                                                    .addToGameList(
-                                                                        item);
-                                                              },
-                                                              child: const Text(
-                                                                  "Add game to list"))
                                                         ],
                                                       ),
+                                                      /*const SizedBox(
+                                                        width: 10.0,
+                                                        height: 10.0,
+                                                      ),*/
+                                                      Row(
+                                                        children: [
+                                                          const Text(
+                                                              "Price below"),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    15.0,
+                                                                    15.0,
+                                                                    0.0,
+                                                                    0.0),
+                                                            child: SizedBox(
+                                                                width: 50.0,
+                                                                height: 10.0,
+                                                                child:
+                                                                    TextField(
+                                                                  decoration:
+                                                                      const InputDecoration(
+                                                                          label:
+                                                                              Text(
+                                                                    "insert price",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                    ),
+                                                                  )),
+                                                                  controller:
+                                                                      textController,
+                                                                )),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: 20.0,
+                                                        width: 20.0,
+                                                      ),
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            var selectedPrice =
+                                                                textController
+                                                                    .value.text;
+                                                            print(
+                                                                "il prezzo selezionato e': $selectedPrice");
+                                                            Map item = {
+                                                              "id": id,
+                                                              "name": name,
+                                                              "selectedPrice":
+                                                                  selectedPrice
+                                                            };
+
+                                                            context
+                                                                .read<
+                                                                    GameList>()
+                                                                .addToGameList(
+                                                                    item);
+                                                          },
+                                                          child: const Text(
+                                                              "Add game to list"))
                                                     ],
                                                   )));
                                         });

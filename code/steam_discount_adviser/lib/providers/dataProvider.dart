@@ -20,12 +20,13 @@ class GameList with ChangeNotifier {
       join(path, 'selectedGames.db'),
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT)',
+          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE)',
         );
       },
       version: 1,
     );
-    await database.insert("GAMES", {"ID": item["id"], "NAME": item["name"]});
+
+    await database.insert("GAMES", {"ID": item["id"], "NAME": item["name"], "DESIRED_PRICE": item["selectedPrice"]});
     hasChanged = true;
     notifyListeners();
     hasChanged = false;
