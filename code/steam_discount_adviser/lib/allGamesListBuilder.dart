@@ -84,7 +84,7 @@ class _TileListState extends State<TileList> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: TextField(
@@ -97,21 +97,21 @@ class _TileListState extends State<TileList> {
                     filled: true,
                     fillColor: Colors.grey[400],
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+                      borderSide: const BorderSide(color: Colors.black),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+                      borderSide: const BorderSide(color: Colors.black),
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    suffixIcon: Icon(
+                    suffixIcon: const Icon(
                       Icons.search,
                       color: Colors.black,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Expanded(
                   child: !flag
                       ? FutureBuilder(
@@ -214,7 +214,7 @@ class _TileListState extends State<TileList> {
                                                                       .addToGameList(
                                                                           item);
                                                                 },
-                                                                child: Text(
+                                                                child: const Text(
                                                                     "Add game to list"))
                                                           ],
                                                         )));
@@ -233,7 +233,7 @@ class _TileListState extends State<TileList> {
                                                           BorderRadius.circular(
                                                               20),
                                                     ),
-                                                    child: Container(
+                                                    child: SizedBox(
                                                         width: 100.0,
                                                         height: 100.0,
                                                         child: Column(
@@ -284,7 +284,7 @@ class _TileListState extends State<TileList> {
                               );
                             } else {
                               return Container(
-                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.blueGrey,
@@ -407,7 +407,7 @@ class _TileListState extends State<TileList> {
                                                           )
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 20.0,
                                                         width: 20.0,
                                                       ),
@@ -416,8 +416,6 @@ class _TileListState extends State<TileList> {
                                                             var selectedPrice =
                                                                 textController
                                                                     .value.text;
-                                                            print(
-                                                                "il prezzo selezionato e': $selectedPrice");
                                                             Map item = {
                                                               "id": id,
                                                               "name": name,
