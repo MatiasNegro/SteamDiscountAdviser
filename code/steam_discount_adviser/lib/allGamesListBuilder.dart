@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
+import 'package:steam_discount_adviser/dialogFactory.dart' as df;
 
 class TileList extends StatefulWidget {
   TileList({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class _TileListState extends State<TileList> {
   ///[data] will be the list of the steam games library
   // ignore: prefer_typing_uninitialized_variables
   late var data;
+  late var dialogFactory;
 
   /// [dataBackup] is needed to make a searchable bar
   // ignore: prefer_typing_uninitialized_variables
@@ -41,6 +43,7 @@ class _TileListState extends State<TileList> {
   void initState() {
     super.initState();
     data = SteamRequest().getAllGames();
+    this.dialogFactory = df.DialogFactory();
   }
 
   ///[_runFilter(String enteredKeyword)] is the business logic of the searchbar
@@ -141,140 +144,19 @@ class _TileListState extends State<TileList> {
                                           showDialog(
                                               context: context,
                                               builder: (context) {
-                                                return Dialog(
-                                                    backgroundColor:
-                                                        Colors.blueGrey[100],
-                                                    elevation: 8.0,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    child: SizedBox(
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        child: Stack(
-                                                          children: [
-                                                            Container(
-                                                              width: 500,
-                                                              height: 500,
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .fromLTRB(
-                                                                      10,
-                                                                      10,
-                                                                      10,
-                                                                      10),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Colors
-                                                                        .blueGrey[
-                                                                    200],
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                              ),
-                                                              child: Text(
-                                                                name,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 18,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                // ignore: prefer_interpolation_to_compose_strings
-                                                                Text("Prezzo: " +
-                                                                    gameInfo[
-                                                                            "price_overview"]
-                                                                        [
-                                                                        "final_formatted"]),
-                                                                const SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                                Text(
-                                                                    "Sconto: ${gameInfo["price_overview"]["discount_percent"]}")
-                                                              ],
-                                                            ),
-                                                            //Button unther row with text
-                                                            ElevatedButton(
-                                                                onPressed: () {
-                                                                  Map item = {
-                                                                    "id": id,
-                                                                    "name": name
-                                                                  };
-                                                                  context
-                                                                      .read<
-                                                                          GameList>()
-                                                                      .addToGameList(
-                                                                          item);
-                                                                },
-                                                                child: const Text(
-                                                                    "Add game to list"))
-                                                          ],
-                                                        )));
+                                                return this
+                                                    .dialogFactory
+                                                    .allGamesDialog(id, name,
+                                                        gameInfo, context);
                                               });
                                         } else {
                                           showDialog(
                                               context: context,
                                               builder: (context) {
-                                                return Dialog(
-                                                    backgroundColor:
-                                                        Colors.blueGrey[100],
-                                                    elevation: 8.0,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    child: SizedBox(
-                                                        width: 100.0,
-                                                        height: 100.0,
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .fromLTRB(
-                                                                      10,
-                                                                      10,
-                                                                      10,
-                                                                      10),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Colors
-                                                                        .blueGrey[
-                                                                    200],
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                              ),
-                                                              child: Text(
-                                                                name,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 18,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const Center(
-                                                              child: Text(
-                                                                  "this game is free!"),
-                                                            )
-                                                          ],
-                                                        )));
+                                                return this
+                                                    .dialogFactory
+                                                    .allGamesDialogFree(
+                                                        id, name, context);
                                               });
                                         }
                                       },
@@ -284,7 +166,8 @@ class _TileListState extends State<TileList> {
                               );
                             } else {
                               return Container(
-                                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.blueGrey,
@@ -315,173 +198,19 @@ class _TileListState extends State<TileList> {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return Dialog(
-                                              backgroundColor:
-                                                  Colors.blueGrey[100],
-                                              elevation: 8.0,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
-                                              child: SizedBox(
-                                                  width: 300.0,
-                                                  height: 300.0,
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        ///[MediaQuery.of()] is being used to let the window be reactive
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .fromLTRB(
-                                                                10, 10, 10, 10),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors
-                                                              .blueGrey[200],
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                        child: Text(
-                                                          name,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          // ignore: prefer_interpolation_to_compose_strings
-                                                          Text("Prezzo: " +
-                                                              gameInfo[
-                                                                      "price_overview"]
-                                                                  [
-                                                                  "final_formatted"]),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Text(
-                                                              "Sconto: ${gameInfo["price_overview"]["discount_percent"]}"),
-                                                        ],
-                                                      ),
-                                                      /*const SizedBox(
-                                                        width: 10.0,
-                                                        height: 10.0,
-                                                      ),*/
-                                                      Row(
-                                                        children: [
-                                                          const Text(
-                                                              "Price below"),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    15.0,
-                                                                    15.0,
-                                                                    0.0,
-                                                                    0.0),
-                                                            child: SizedBox(
-                                                                width: 50.0,
-                                                                height: 10.0,
-                                                                child:
-                                                                    TextField(
-                                                                  decoration:
-                                                                      const InputDecoration(
-                                                                          label:
-                                                                              Text(
-                                                                    "insert price",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                    ),
-                                                                  )),
-                                                                  controller:
-                                                                      textController,
-                                                                )),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20.0,
-                                                        width: 20.0,
-                                                      ),
-                                                      ElevatedButton(
-                                                          onPressed: () {
-                                                            var selectedPrice =
-                                                                textController
-                                                                    .value.text;
-                                                            Map item = {
-                                                              "id": id,
-                                                              "name": name,
-                                                              "selectedPrice":
-                                                                  selectedPrice
-                                                            };
-
-                                                            context
-                                                                .read<
-                                                                    GameList>()
-                                                                .addToGameList(
-                                                                    item);
-                                                          },
-                                                          child: const Text(
-                                                              "Add game to list"))
-                                                    ],
-                                                  )));
+                                          return this
+                                              .dialogFactory
+                                              .allGamesDialog(
+                                                  id, name, gameInfo, context);
                                         });
                                   } else {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return Dialog(
-                                              backgroundColor:
-                                                  Colors.blueGrey[100],
-                                              elevation: 8.0,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
-                                              child: SizedBox(
-                                                  width: 100.0,
-                                                  height: 100.0,
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .fromLTRB(
-                                                                10, 10, 10, 10),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors
-                                                              .blueGrey[200],
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                        child: Text(
-                                                          name,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const Center(
-                                                        child: Text(
-                                                            "this game is free!"),
-                                                      )
-                                                    ],
-                                                  )));
+                                          return this
+                                              .dialogFactory
+                                              .allGamesDialogFree(
+                                                  id, name, context);
                                         });
                                   }
                                 },
