@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
-import 'package:steam_discount_adviser/dialogFactory.dart' as df;
+import 'package:steam_discount_adviser/dialogFactory.dart';
 
 class TileList extends StatefulWidget {
   TileList({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _TileListState extends State<TileList> {
   ///[data] will be the list of the steam games library
   // ignore: prefer_typing_uninitialized_variables
   late var data;
-  late var dialogFactory;
+  late var myDialogF;
 
   /// [dataBackup] is needed to make a searchable bar
   // ignore: prefer_typing_uninitialized_variables
@@ -43,7 +43,7 @@ class _TileListState extends State<TileList> {
   void initState() {
     super.initState();
     data = SteamRequest().getAllGames();
-    this.dialogFactory = df.DialogFactory();
+    this.myDialogF = DialogFactory();
   }
 
   ///[_runFilter(String enteredKeyword)] is the business logic of the searchbar
@@ -144,17 +144,18 @@ class _TileListState extends State<TileList> {
                                           showDialog(
                                               context: context,
                                               builder: (context) {
-                                                return this
-                                                    .dialogFactory
-                                                    .allGamesDialog(id, name,
-                                                        gameInfo, context);
+                                                return myDialogF.allGamesDialog(
+                                                    id,
+                                                    name,
+                                                    gameInfo,
+                                                    context);
                                               });
                                         } else {
                                           showDialog(
                                               context: context,
                                               builder: (context) {
                                                 return this
-                                                    .dialogFactory
+                                                    .myDialogF
                                                     .allGamesDialogFree(
                                                         id, name, context);
                                               });
@@ -198,17 +199,15 @@ class _TileListState extends State<TileList> {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return this
-                                              .dialogFactory
-                                              .allGamesDialog(
-                                                  id, name, gameInfo, context);
+                                          return this.myDialogF.allGamesDialog(
+                                              id, name, gameInfo, context);
                                         });
                                   } else {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
                                           return this
-                                              .dialogFactory
+                                              .myDialogF
                                               .allGamesDialogFree(
                                                   id, name, context);
                                         });
