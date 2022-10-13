@@ -11,6 +11,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart';
+import 'package:steam_discount_adviser/widgetFactory.dart';
 
 class TileList extends StatefulWidget {
   TileList({Key? key}) : super(key: key);
@@ -166,17 +167,7 @@ class _TileListState extends State<TileList> {
                                 }),
                               );
                             } else {
-                              return Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.blueGrey,
-                                  ),
-                                  child: const Center(
-                                      child: CircularProgressIndicator(
-                                    color: Colors.black,
-                                  )));
+                              return WidgetFactory().styledCircularIndicator();
                             }
                           },
                         )

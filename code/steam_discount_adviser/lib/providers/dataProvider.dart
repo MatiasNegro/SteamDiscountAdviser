@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:steam_discount_adviser/notificator.dart';
 import 'package:steam_discount_adviser/requests.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart' as df;
+import 'package:steam_discount_adviser/widgetFactory.dart';
+import 'package:steam_discount_adviser/notificator.dart';
 
 class GameList with ChangeNotifier {
   late var _data;
   bool hasChanged = false;
   late var displayedData = buildListOfGames();
   var dialogFactory = df.DialogFactory();
+  late var databaseBackup;
+  bool flag = true;
 
   get gameList => _data;
 
-  Future<List> takeList() async {
+  /*Future<List> takeList() async {
     List toReturn = await SteamRequest().getSelectedGames as List;
     return toReturn;
+  }*/
+
+  void notify(id, selectedPrice) {
+    String now = DateTime.now().toString();
+    now = now.substring(11, 13);
+
+    if (now == "19") {
+      SteamNotificator().Notify(id, selectedPrice);
+    }
   }
 
   addToGameList(var item) async {
@@ -81,11 +95,21 @@ class GameList with ChangeNotifier {
         if (snapshot.hasData) {
           isLoading = false;
           _data = snapshot.data;
+          if (flag) {
+            databaseBackup = _data;
+            flag = !flag;
+          }
 
           return ListView.builder(
             controller: ScrollController(),
             itemCount: _data.length,
             itemBuilder: ((BuildContext context, int index) {
+              notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
+              if (!(databaseBackup as List).contains(_data[index]["ID"]) &&
+                  flag) {
+                SteamNotificator()
+                    .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
+              }
               return Card(
                 color: Colors.blueGrey[300],
                 //Tiles creation
@@ -117,16 +141,7 @@ class GameList with ChangeNotifier {
         } else {
           //If problems with the database are found, is returned a progress indicator while the app
           //"searches" a solution
-          return Container(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blueGrey,
-              ),
-              child: const Center(
-                  child: CircularProgressIndicator(
-                color: Colors.black,
-              )));
+          return WidgetFactory().styledCircularIndicator();
         }
       },
     ));

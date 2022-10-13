@@ -90,10 +90,13 @@ class _SelectedGamesState extends State<SelectedGames> {
 
             //Main widget, this is the list of selected games
             context.watch<GameList>().displayedData,
+            
+            
           ],
         ),
       ),
     );
+    
     /*if (context.watch<GameList>().hasChanged) {
       setState(() {
         context.watch<GameList>().displayedData;
