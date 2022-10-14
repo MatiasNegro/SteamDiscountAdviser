@@ -12,8 +12,8 @@ class GameList with ChangeNotifier {
   bool hasChanged = false;
   late var displayedData = buildListOfGames();
   var dialogFactory = df.DialogFactory();
-  late var databaseBackup;
-  bool flag = true;
+  late List databaseBackup;
+  bool backupFlag = true;
 
   get gameList => _data;
 
@@ -95,18 +95,18 @@ class GameList with ChangeNotifier {
         if (snapshot.hasData) {
           isLoading = false;
           _data = snapshot.data;
-          if (flag) {
-            databaseBackup = _data;
-            flag = !flag;
-          }
-
           return ListView.builder(
             controller: ScrollController(),
             itemCount: _data.length,
             itemBuilder: ((BuildContext context, int index) {
               notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
-              if (!(databaseBackup as List).contains(_data[index]["ID"]) &&
-                  flag) {
+              if (backupFlag) {
+                SteamNotificator()
+                    .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
+                backupFlag = false;
+              }
+              print(databaseBackup);
+              if (!databaseBackup.contains(_data[index]["ID"])) {
                 SteamNotificator()
                     .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
               }
