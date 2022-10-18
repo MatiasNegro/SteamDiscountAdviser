@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/notificator.dart';
 import 'package:steam_discount_adviser/requests.dart';
@@ -12,10 +14,12 @@ class GameList with ChangeNotifier {
   bool hasChanged = false;
   late var displayedData = buildListOfGames();
   var dialogFactory = df.DialogFactory();
-  late List databaseBackup;
-  bool backupFlag = true;
 
+  ///[databaseBackup] contains the gameList at the iteration i-1
+  var databaseBackup;
+  bool backupFlag = true;
   get gameList => _data;
+  bool firstIterationFlag = true;
 
   /*Future<List> takeList() async {
     List toReturn = await SteamRequest().getSelectedGames as List;
@@ -29,6 +33,10 @@ class GameList with ChangeNotifier {
     if (now == "19") {
       SteamNotificator().Notify(id, selectedPrice);
     }
+  }
+
+  void changeFlag() {
+    backupFlag = !backupFlag;
   }
 
   addToGameList(var item) async {
@@ -51,6 +59,7 @@ class GameList with ChangeNotifier {
     hasChanged = true;
     displayedData = buildListOfGames();
     notifyListeners();
+    changeFlag();
     hasChanged = false;
   }
 
@@ -69,6 +78,7 @@ class GameList with ChangeNotifier {
     await database.delete("GAMES", where: "ID = ?", whereArgs: [id]);
     hasChanged = true;
     displayedData = buildListOfGames();
+    changeFlag();
     notifyListeners();
     hasChanged = false;
   }
@@ -95,18 +105,25 @@ class GameList with ChangeNotifier {
         if (snapshot.hasData) {
           isLoading = false;
           _data = snapshot.data;
+          if (backupFlag) {
+            databaseBackup = _data;
+            backupFlag = false;
+          }
           return ListView.builder(
             controller: ScrollController(),
             itemCount: _data.length,
             itemBuilder: ((BuildContext context, int index) {
-              notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
-              if (backupFlag) {
-                SteamNotificator()
-                    .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
-                backupFlag = false;
+              //If is the first iteration, notify for all games in discount
+              if (firstIterationFlag) {
+                //The notifications may not start on first iteration
+                //possible bug in the package
+                //Solution: restart
+                notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
+                firstIterationFlag = false;
               }
-              print(databaseBackup);
-              if (!databaseBackup.contains(_data[index]["ID"])) {
+
+              ///If there is a game that was not in [_data] at the iteration i-1, try the notify
+              if (!databaseBackup.contains(_data[index])) {
                 SteamNotificator()
                     .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
               }
