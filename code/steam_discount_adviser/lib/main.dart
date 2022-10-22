@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
-import 'package:steam_discount_adviser/threadFactory.dart';
+import 'package:steam_discount_adviser/SchedulerFactory.dart';
 
 void main() {
-  ThreadFactory().SteamThread();
+  SchedulerFactory().SteamScheduler();
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => GameList())],
     child: const MyApp(),

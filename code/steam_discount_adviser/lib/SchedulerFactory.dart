@@ -3,9 +3,9 @@ import 'package:thread/thread.dart';
 import 'package:steam_discount_adviser/notificator.dart';
 import 'package:cron/cron.dart';
 
-class ThreadFactory {
+class SchedulerFactory {
   // ignore: non_constant_identifier_names
-  SteamThread() {
+  SteamScheduler() {
     final cron = Cron();
     cron.schedule(Schedule.parse('* * */1 * * *'), () async {
       var now = DateTime.now().toString().substring(11, 13);
