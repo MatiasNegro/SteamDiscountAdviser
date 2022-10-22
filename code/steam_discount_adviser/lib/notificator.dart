@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:steam_discount_adviser/requests.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SteamNotificator {
   Notify(id, selectedPrice) async {
@@ -14,7 +16,18 @@ class SteamNotificator {
         title: "SteamDiscountAdviser",
         body: 'The price of $name is $toParse',
       );
+      print("miao");
       notification.show();
     }
+  }
+
+  // ignore: non_constant_identifier_names
+  TimeNotifier() async {
+    await SteamRequest().getSelectedGames().then((value) {
+      value.forEach((element) {
+        Notify(element["ID"], element["DESIRED_PRICE"]);
+      });
+    });
+    return;
   }
 }

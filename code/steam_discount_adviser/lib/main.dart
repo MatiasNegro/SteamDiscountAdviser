@@ -3,16 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
-import 'package:thread/thread.dart';
+import 'package:steam_discount_adviser/threadFactory.dart';
 
 void main() {
-  var thread = Thread(
-    (emitter) {
-      while (true) {
-        print("miao");
-      }
-    },
-  );
+  ThreadFactory().SteamThread();
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => GameList())],
     child: const MyApp(),

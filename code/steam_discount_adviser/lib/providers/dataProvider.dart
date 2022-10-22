@@ -26,15 +26,6 @@ class GameList with ChangeNotifier {
     return toReturn;
   }*/
 
-  void notify(id, selectedPrice) {
-    String now = DateTime.now().toString();
-    now = now.substring(11, 13);
-
-    if (now == "19") {
-      SteamNotificator().Notify(id, selectedPrice);
-    }
-  }
-
   void changeFlag() {
     backupFlag = !backupFlag;
   }
@@ -118,7 +109,8 @@ class GameList with ChangeNotifier {
                 //The notifications may not start on first iteration
                 //possible bug in the package
                 //Solution: restart
-                notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
+                SteamNotificator()
+                    .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
                 firstIterationFlag = false;
               }
 
