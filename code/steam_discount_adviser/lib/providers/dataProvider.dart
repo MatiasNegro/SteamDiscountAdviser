@@ -10,6 +10,7 @@ import 'package:steam_discount_adviser/widgetFactory.dart';
 import 'package:steam_discount_adviser/notificator.dart';
 
 class GameList with ChangeNotifier {
+  int counter = 0;
   late var _data;
   bool hasChanged = false;
   late var displayedData = buildListOfGames();
@@ -31,7 +32,9 @@ class GameList with ChangeNotifier {
   }
 
   addToGameList(var item) async {
+    ///[path] gets the flutter-standard database path
     String path = await getDatabasesPath();
+    //Opening the database (if the onCreate is necesasry)
     final Database database = await openDatabase(
       join(path, 'selectedGames.db'),
       onCreate: (db, version) {
@@ -42,12 +45,14 @@ class GameList with ChangeNotifier {
       version: 1,
     );
 
+    ///[database.insert()] instert the chosen game into the database
     await database.insert("GAMES", {
       "ID": item["id"],
       "NAME": item["name"],
       "DESIRED_PRICE": item["selectedPrice"]
     });
     hasChanged = true;
+
     displayedData = buildListOfGames();
     notifyListeners();
     changeFlag();
@@ -67,11 +72,12 @@ class GameList with ChangeNotifier {
     );
 
     await database.delete("GAMES", where: "ID = ?", whereArgs: [id]);
+
     hasChanged = true;
+
     displayedData = buildListOfGames();
     changeFlag();
     notifyListeners();
-    hasChanged = false;
   }
 
   dropGameList() {
@@ -96,6 +102,9 @@ class GameList with ChangeNotifier {
         if (snapshot.hasData) {
           isLoading = false;
           _data = snapshot.data;
+
+          counter++;
+          int counter_1 = 0;
           if (backupFlag) {
             databaseBackup = _data;
             backupFlag = false;
@@ -105,20 +114,35 @@ class GameList with ChangeNotifier {
             itemCount: _data.length,
             itemBuilder: ((BuildContext context, int index) {
               //If is the first iteration, notify for all games in discount
-              if (firstIterationFlag) {
+              if (firstIterationFlag && counter_1 != _data.length + 1) {
                 //The notifications may not start on first iteration
                 //possible bug in the package
                 //Solution: restart
+
                 SteamNotificator()
                     .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
-                firstIterationFlag = false;
+                counter_1++;
+                if (counter_1 == _data.length - 1) {
+                  firstIterationFlag = false;
+                }
+                //firstIterationFlag = false;
               }
 
               ///If there is a game that was not in [_data] at the iteration i-1, try the notify
-              if (!databaseBackup.contains(_data[index])) {
+
+              ///[databasebackuo.contains()] checks for object isntance
+              ///So i forced to check the Id's with another [List] type variable [databaseIds]
+              List databaseIds = [];
+              (databaseBackup as List).forEach((element) {
+                databaseIds.add(element["ID"]);
+              });
+              if (!databaseIds.contains(_data[index]["ID"]) &&
+                  !firstIterationFlag &&
+                  counter % 2 != 0) {
                 SteamNotificator()
                     .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
               }
+
               return Card(
                 color: Colors.blueGrey[300],
                 //Tiles creation
