@@ -1,19 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:steam_discount_adviser/env.dart';
 import 'package:steam_discount_adviser/requests.dart';
 import 'package:test/test.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:dio/dio.dart';
+
+///[em] prefix needed to avoid conflict with Path package
 
 void main() {
   test('getAllGames should retrive a json with all game names and their id',
       () async {
-    var myJson = await SteamRequest().getAllGames();
-    var matcher = myJson[5];
-    expect(matcher["name"].toString(), equals("test2"));
+    var response = await Dio().get(getAllGamesApi);
+    expect(response.statusCode, 200);
   });
 
   test("getGameDetails should give back the details of a game from its id",
       () async {
     String name = "Sight and Sound Town";
     String id = "1924700";
-    var toCompare = await SteamRequest().getGameDetails(1924700);
-    expect(toCompare[id]["data"]["name"], equals(name));
+    var toCompare = await SteamRequest().getGameDetails(id);
+    expect(toCompare["name"], name);
+  });
+
+  test('Given a GAMES table, should retrive all games', () async {
+    //String path = await getDatabasesPath();
+    //Opening the database
+    Database database = await openDatabase(
+      join("../Data/Documents", 'selectedGames.db'),
+      //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
+        );
+      },
+      version: 1,
+    );
+
+    expect(database.isOpen, true);
   });
 }
