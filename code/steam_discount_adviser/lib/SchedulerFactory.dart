@@ -14,9 +14,10 @@ class SchedulerFactory {
       var now = DateTime.now().toString().substring(11, 13);
       if (now == "19") {
         //If yes start the notification check
-        SteamNotificator().TimeNotifier();
+         SteamNotificator().TimeNotifier();
       }
       //Else returns
     });
+    cron.close();
   }
 }

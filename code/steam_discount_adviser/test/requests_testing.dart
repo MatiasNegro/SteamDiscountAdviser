@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart' as ft;
 import 'package:steam_discount_adviser/env.dart';
 import 'package:steam_discount_adviser/requests.dart';
 import 'package:test/test.dart';
@@ -26,8 +27,10 @@ void main() {
   test('Given a GAMES table, should retrive all games', () async {
     //String path = await getDatabasesPath();
     //Opening the database
+    ft.TestWidgetsFlutterBinding.ensureInitialized();
+
     Database database = await openDatabase(
-      join("../Data/Documents", 'selectedGames.db'),
+      inMemoryDatabasePath,
       //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
       onCreate: (db, version) {
         return db.execute(
