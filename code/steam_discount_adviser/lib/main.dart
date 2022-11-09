@@ -1,12 +1,29 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:flutter/material.dart' hide MenuItem;
+import 'package:flutter/cupertino.dart' hide MenuItem;
 import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
 import 'package:steam_discount_adviser/SchedulerFactory.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:tray_manager/tray_manager.dart';
 
-void main() {
+void main() async {
   SchedulerFactory().SteamScheduler();
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+      size: Size(800, 600),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      title: "Steam Discount Adviser");
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => GameList())],
     child: const MyApp(),
@@ -29,11 +46,45 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyStatelessWidget extends StatelessWidget {
+class MyStatelessWidget extends StatelessWidget
+    with TrayListener, WindowListener {
   const MyStatelessWidget({Key? key}) : super(key: key);
+
+  void initState() {
+    trayManager.addListener(this);
+    windowManager.addListener(this);
+    _init();
+  }
+
+  _init() async {
+    await trayManager.setIcon(
+      Platform.isWindows
+          ? 'assets/images/app_icon_128.ico'
+          : 'assets/images/app_icon_128.png',
+    );
+    Menu menu = Menu(
+      items: [
+        MenuItem(
+          key: 'show_window',
+          label: 'Show Window',
+        ),
+        MenuItem(
+          key: 'set_ignore_mouse_events',
+          label: 'setIgnoreMouseEvents(false)',
+        ),
+        MenuItem.separator(),
+        MenuItem(
+          key: 'exit_app',
+          label: 'Exit App',
+        ),
+      ],
+    );
+    await trayManager.setContextMenu(menu);
+  }
 
   @override
   Widget build(BuildContext context) {
+    initState();
     //One page application, the window get divided in two sections, the left occupies the 30% of the window
     //and the right the 70% => $flex=3 and $flex = 7
     return Container(
@@ -74,5 +125,15 @@ class MyStatelessWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  void onWindowClose() async {
+    await windowManager.close();
+  }
+
+  @override
+  void onTrayMenuItemClick(MenuItem menuItem) async {
+    await windowManager.focus();
   }
 }
