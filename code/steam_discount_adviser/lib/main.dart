@@ -129,11 +129,20 @@ class MyStatelessWidget extends StatelessWidget
 
   @override
   void onWindowClose() async {
-    await windowManager.close();
+    print("chiamato onWindowClose");
+    await windowManager.hide();
+    return;
+  }
+
+  @override
+  void onTrayIconMouseDown() async {
+    await windowManager.show();
   }
 
   @override
   void onTrayMenuItemClick(MenuItem menuItem) async {
-    await windowManager.focus();
+    print("Chiamato show");
+    await windowManager.show();
+    return;
   }
 }
