@@ -25,7 +25,9 @@ class SteamRequest {
     //toRetrun is now a List disguised as a Map, so we can without problems cast it and
     //Filter the games we do not want to appear.
     //Removing elements where there is no name
-    (toReturn as List).removeWhere((element) => element["name"].isEmpty);
+    (toReturn as List).removeWhere(
+        (element) => element["name"].isEmpty || element["appid"] == 216938 || (element["name"] as String).contains("test"));
+
     return toReturn;
   }
 

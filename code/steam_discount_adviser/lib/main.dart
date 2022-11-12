@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart' hide MenuItem;
-import 'package:flutter/cupertino.dart' hide MenuItem;
 import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
@@ -10,10 +9,13 @@ import 'package:window_manager/window_manager.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 void main() async {
+  //Scheduler to notify the user if a game is in discount at 7 PM CEST
   SchedulerFactory().SteamScheduler();
+  //Necessary fotn the windowManager
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
 
+  //Options of the window
   WindowOptions windowOptions = const WindowOptions(
       size: Size(800, 600),
       center: true,
@@ -56,12 +58,14 @@ class MyStatelessWidget extends StatelessWidget
     _init();
   }
 
+  //Setting the icon for the appliction based on the OS
   _init() async {
     await trayManager.setIcon(
       Platform.isWindows
           ? 'assets/images/app_icon_128.ico'
           : 'assets/images/app_icon_128.png',
     );
+    //Settings for the trayManager
     Menu menu = Menu(
       items: [
         MenuItem(

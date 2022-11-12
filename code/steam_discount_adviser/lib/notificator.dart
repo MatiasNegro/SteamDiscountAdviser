@@ -17,7 +17,6 @@ class SteamNotificator {
         title: "SteamDiscountAdviser",
         body: 'The price of $name is $toParse',
       );
-      //print("miao");
       notification.show();
     }
   }

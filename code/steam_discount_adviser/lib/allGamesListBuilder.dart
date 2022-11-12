@@ -151,7 +151,12 @@ class _TileListState extends State<TileList> {
                                                     gameInfo,
                                                     context);
                                               });
-                                        } else {
+                                        } else if (gameInfo["is_free"] ==
+                                                true &&
+                                            // ignore: unrelated_type_equality_checks
+                                            (gameInfo["type"] == "game" ||
+                                                    gameInfo["type"]) ==
+                                                "dlc") {
                                           showDialog(
                                               context: context,
                                               builder: (context) {
@@ -160,6 +165,14 @@ class _TileListState extends State<TileList> {
                                                     .allGamesDialogFree(
                                                         id, name, context);
                                               });
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              builder: ((context) {
+                                                return this
+                                                    .myDialogF
+                                                    .ExceptionDialog(context);
+                                              }));
                                         }
                                       },
                                     ),
