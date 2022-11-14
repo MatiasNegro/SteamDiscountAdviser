@@ -153,18 +153,23 @@ class GameList with ChangeNotifier {
                     var name = _data[index]["NAME"];
                     // ignore: prefer_typing_uninitialized_variables
                     var price;
+                    var selectedPrice;
                     //removeFromGameList(id);
                     //Retriving the game price informations
                     await SteamRequest().getGameDetails(id).then((value) {
                       price = value["price_overview"]["final_formatted"];
                     });
+                    await SteamRequest().getSelectedPrice(id).then((value) {
+                      selectedPrice = value;
+                    });
+
                     //Pop-up dialog on tile click
                     showDialog(
                         context: context,
                         builder: (context) {
                           return this
                               .dialogFactory
-                              .SelectedGamesDialog(id, name, price, context);
+                              .SelectedGamesDialog(id, name, price, selectedPrice, context);
                         });
                   },
                 ),

@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 class DialogFactory {
   final textController = TextEditingController();
 
-  Widget SelectedGamesDialog(id, name, price, BuildContext context) {
+  Widget SelectedGamesDialog(
+      id, name, price, selectedPrice, BuildContext context) {
     return Dialog(
         backgroundColor: Colors.blueGrey[100],
         elevation: 8.0,
@@ -14,8 +15,9 @@ class DialogFactory {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
-            width: 100.0,
-            height: 100.0,
+            constraints: const BoxConstraints(minHeight: 140, minWidth: 350),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: Column(
               children: [
                 Container(
@@ -25,36 +27,81 @@ class DialogFactory {
                     color: Colors.blueGrey[200],
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 18,
+                  child: Center(
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontFamily: "/font/RobotoMono-Regular.ttf"),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 15.0,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment
                       .center, //Center Row contents horizontally,
                   children: [
-                    Text("Price:  $price"),
+                    Text(
+                      "Price:  $price",
+                      style: const TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: "/font/RobotoMono-Regular.ttf"),
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
                     // ignore: prefer_interpolation_to_compose_strings
-                    Text("Sconto:  + $price")
+                    Text(
+                      "selected price:  $selectedPrice",
+                      style: const TextStyle(
+                          fontSize: 16.0,
+                          fontFamily: "/font/RobotoMono-Regular.ttf"),
+                    )
                   ],
                 ),
                 const SizedBox(
-                  height: 10.0,
+                  height: 20.0,
                 ),
-                Row(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          context.read<GameList>().removeFromGameList(id);
-                        },
-                        child: Center(child: Text("Delete")))
-                  ],
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 90, 140, 164)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50))),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            context.read<GameList>().removeFromGameList(id);
+                          },
+                          child: const Text(
+                            "Delete game",
+                            style: TextStyle(
+                                fontFamily: "/font/RobotoMono-Regular.ttf"),
+                          )),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
+                      ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 215, 26, 26)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50))),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(Icons.close))
+                    ],
+                  ),
                 )
               ],
             )));
@@ -67,9 +114,10 @@ class DialogFactory {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: SizedBox(
-            width: 300.0,
-            height: 180.0,
+        child: Container(
+            constraints: const BoxConstraints(minHeight: 140, minWidth: 350),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.35,
             child: Column(
               children: [
                 Container(
@@ -83,8 +131,8 @@ class DialogFactory {
                   child: Text(
                     name,
                     style: const TextStyle(
-                      fontSize: 18,
-                    ),
+                        fontSize: 18,
+                        fontFamily: "/font/RobotoMono-Regular.ttf"),
                   ),
                 ),
                 const SizedBox(
@@ -184,9 +232,10 @@ class DialogFactory {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: SizedBox(
-            width: 100.0,
-            height: 100.0,
+        child: Container(
+            constraints: const BoxConstraints(minHeight: 140, minWidth: 350),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: Column(
               children: [
                 Container(
@@ -228,9 +277,10 @@ class DialogFactory {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: SizedBox(
-            width: 100.0,
-            height: 100.0,
+        child: Container(
+            constraints: const BoxConstraints(minHeight: 140, minWidth: 350),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: Column(
               children: [
                 Container(
@@ -243,7 +293,7 @@ class DialogFactory {
                   child: const Text(
                     "Sorry for the incovenient",
                     textAlign: TextAlign.center,
-                    style:  TextStyle(
+                    style: TextStyle(
                         fontSize: 18,
                         fontFamily: "/font/RobotoMono-Regular.ttf"),
                   ),

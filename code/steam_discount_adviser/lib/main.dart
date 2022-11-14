@@ -84,6 +84,7 @@ class MyStatelessWidget extends StatelessWidget
       ],
     );
     await trayManager.setContextMenu(menu);
+    await windowManager.setMinimumSize(const Size(712.0, 490.0));
   }
 
   @override
@@ -92,6 +93,10 @@ class MyStatelessWidget extends StatelessWidget
     //One page application, the window get divided in two sections, the left occupies the 30% of the window
     //and the right the 70% => $flex=3 and $flex = 7
     return Container(
+      constraints: const BoxConstraints(
+        minHeight: 800.0,
+        minWidth: 600.0,
+      ),
       color: Colors.blueGrey[900],
       padding: const EdgeInsets.all(10),
       child: Row(

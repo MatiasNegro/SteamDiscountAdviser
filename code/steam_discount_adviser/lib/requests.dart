@@ -1,7 +1,6 @@
 //
 // DO-NOT REMOVE THE IMPORTS EVEN IF FLUTTER SAYS THAT ARE USELESS, THEY'RE NOT!
 //
-
 import 'dart:core';
 import 'dart:io';
 import 'package:dio/dio.dart';
@@ -25,8 +24,10 @@ class SteamRequest {
     //toRetrun is now a List disguised as a Map, so we can without problems cast it and
     //Filter the games we do not want to appear.
     //Removing elements where there is no name
-    (toReturn as List).removeWhere(
-        (element) => element["name"].isEmpty || element["appid"] == 216938 || (element["name"] as String).contains("test"));
+    (toReturn as List).removeWhere((element) =>
+        element["name"].isEmpty ||
+        element["appid"] == 216938 ||
+        (element["name"] as String).contains("test"));
 
     return toReturn;
   }
@@ -38,6 +39,7 @@ class SteamRequest {
     toReturn = response.data;
     //The response is cleaned of the useless stuff and the returned value haas just the info
     toReturn = toReturn["$id"]["data"];
+    print(toReturn["name"]);
     return toReturn;
   }
 
@@ -64,5 +66,25 @@ class SteamRequest {
     //Database clousure
     database.close();
     return toReturn;
+  }
+
+  Future<String> getSelectedPrice(id) async {
+    String path = await getDatabasesPath();
+    //Opening the database
+    final Database database = await openDatabase(
+      join(path, 'selectedGames.db'),
+      //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
+        );
+      },
+      version: 1,
+    );
+    //Database interrogation, query is not to make any SQL interrogation but for SELECT only
+    var query = await database.query("GAMES",
+        columns: ["DESIRED_PRICE"], where: "ID = $id");
+    double toReturn = double.parse(query[0]["DESIRED_PRICE"].toString());
+    return toReturn.toString().replaceAll(".", ",");
   }
 }
