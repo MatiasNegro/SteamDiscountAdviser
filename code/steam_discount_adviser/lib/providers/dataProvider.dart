@@ -1,5 +1,5 @@
 import 'dart:core';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/notificator.dart';
 import 'package:steam_discount_adviser/requests.dart';
@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart' as df;
 import 'package:steam_discount_adviser/widgetFactory.dart';
 import 'package:steam_discount_adviser/notificator.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class GameList with ChangeNotifier {
   int counter = 0;
@@ -34,23 +35,39 @@ class GameList with ChangeNotifier {
   addToGameList(var item) async {
     ///[path] gets the flutter-standard database path
     String path = await getDatabasesPath();
-    //Opening the database (if the onCreate is necesasry)
-    final Database database = await openDatabase(
-      join(path, 'selectedGames.db'),
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
-        );
-      },
-      version: 1,
-    );
 
-    ///[database.insert()] instert the chosen game into the database
-    await database.insert("GAMES", {
-      "ID": item["id"],
-      "NAME": item["name"],
-      "DESIRED_PRICE": item["selectedPrice"]
-    });
+    if (Platform.isWindows || Platform.isLinux) {
+      var databaseFactory = databaseFactoryFfi;
+      var db = await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      await db.execute('''
+              CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
+              ''');
+
+      await db.insert("GAMES", {
+        "ID": item["id"],
+        "NAME": item["name"],
+        "DESIRED_PRICE": item["selectedPrice"]
+      });
+    } else {
+      //Opening the database (if the onCreate is necesasry)
+      final Database database = await openDatabase(
+        join(path, 'selectedGames.db'),
+        onCreate: (db, version) {
+          return db.execute(
+            'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
+          );
+        },
+        version: 1,
+      );
+
+      ///[database.insert()] instert the chosen game into the database
+      await database.insert("GAMES", {
+        "ID": item["id"],
+        "NAME": item["name"],
+        "DESIRED_PRICE": item["selectedPrice"]
+      });
+      database.close();
+    }
     hasChanged = true;
 
     displayedData = buildListOfGames();
@@ -61,17 +78,29 @@ class GameList with ChangeNotifier {
 
   removeFromGameList(var id) async {
     String path = await getDatabasesPath();
-    final Database database = await openDatabase(
-      join(path, 'selectedGames.db'),
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
-        );
-      },
-      version: 1,
-    );
+    if (Platform.isWindows || Platform.isLinux) {
+      var databaseFactory = databaseFactoryFfi;
+      var db = await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      await db.execute('''
+              CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
+              ''');
+      await db.delete("GAMES", where: "ID = ?", whereArgs: [id]);
 
-    await database.delete("GAMES", where: "ID = ?", whereArgs: [id]);
+      db.close();
+    } else {
+      final Database database = await openDatabase(
+        join(path, 'selectedGames.db'),
+        onCreate: (db, version) {
+          return db.execute(
+            'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
+          );
+        },
+        version: 1,
+      );
+
+      await database.delete("GAMES", where: "ID = ?", whereArgs: [id]);
+      database.close();
+    }
 
     hasChanged = true;
 
@@ -167,9 +196,8 @@ class GameList with ChangeNotifier {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          return this
-                              .dialogFactory
-                              .SelectedGamesDialog(id, name, price, selectedPrice, context);
+                          return this.dialogFactory.SelectedGamesDialog(
+                              id, name, price, selectedPrice, context);
                         });
                   },
                 ),

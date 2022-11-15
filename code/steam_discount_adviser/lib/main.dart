@@ -62,7 +62,7 @@ class MyStatelessWidget extends StatelessWidget
   _init() async {
     await trayManager.setIcon(
       Platform.isWindows
-          ? 'assets/images/app_icon_128.ico'
+          ? 'assets/images/app_icon_128.png'
           : 'assets/images/app_icon_128.png',
     );
     //Settings for the trayManager

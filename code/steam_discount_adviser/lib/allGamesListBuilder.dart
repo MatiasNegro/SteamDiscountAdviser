@@ -49,6 +49,8 @@ class _TileListState extends State<TileList> {
 
   ///[_runFilter(String enteredKeyword)] is the business logic of the searchbar
   void _runFilter(String enteredKeyword) {
+    //Convert to lower case to avoid case sensive problems
+    enteredKeyword = enteredKeyword.toLowerCase();
     if (!flag) {
       ///If is the first search, the data is saved in case all keywords were deleted
       dataBackup = List.from(data);

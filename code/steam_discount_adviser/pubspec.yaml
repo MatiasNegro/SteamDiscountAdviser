@@ -53,6 +53,7 @@ dependencies:
   sqflite_common_ffi: ^2.2.0+1
   window_manager: ^0.2.7
   tray_manager: ^0.2.0
+  dartdoc: ^6.1.1
   
 dev_dependencies:
   flutter_test:
@@ -96,6 +97,9 @@ flutter:
     - family: RobotoMono
       fonts:
         - asset: font/RobotoMono-Regular.ttf
+    - family: TrashBinIcon
+      fonts:
+        - asset: font/TrashBinIcon.ttf
 
   #   - family: Schyler
   #     fonts:

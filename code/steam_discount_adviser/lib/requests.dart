@@ -9,6 +9,9 @@ import 'package:steam_discount_adviser/env.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+/// 
 
 class SteamRequest {
   var dio = Dio();
@@ -39,52 +42,83 @@ class SteamRequest {
     toReturn = response.data;
     //The response is cleaned of the useless stuff and the returned value haas just the info
     toReturn = toReturn["$id"]["data"];
-    print(toReturn["name"]);
     return toReturn;
   }
 
   //Returns the games we added to the List. Data is stored inside a sqlite3 database
   //accessible only by the app.
   Future<List> getSelectedGames() async {
-    //Getting the standard db directory
     String path = await getDatabasesPath();
-    //Opening the database
-    final Database database = await openDatabase(
-      join(path, 'selectedGames.db'),
-      //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
-        );
-      },
-      version: 1,
-    );
-    //Database interrogation, query is not to make any SQL interrogation but for SELECT only
-    var query = await database.query("GAMES");
-    //Listing query results
-    List toReturn = query.toList();
-    //Database clousure
-    database.close();
+    List toReturn = [];
+
+    if (Platform.isWindows || Platform.isLinux) {
+      var databaseFactory = databaseFactoryFfi;
+      var db =
+          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      await db.execute('''
+              CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
+              ''');
+      var query = await db.query("GAMES");
+      toReturn = query.toList();
+      db.close();
+    } else {
+      //Getting the standard db directory
+
+      //Opening the database
+      final Database database = await openDatabase(
+        join(path, 'selectedGames.db'),
+        //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
+        onCreate: (db, version) {
+          return db.execute(
+            'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
+          );
+        },
+        version: 1,
+      );
+      //Database interrogation, query is not to make any SQL interrogation but for SELECT only
+      var query = await database.query("GAMES");
+      //Listing query results
+      toReturn = query.toList();
+      //Database clousure
+      database.close();
+    }
+
     return toReturn;
   }
 
   Future<String> getSelectedPrice(id) async {
     String path = await getDatabasesPath();
-    //Opening the database
-    final Database database = await openDatabase(
-      join(path, 'selectedGames.db'),
-      //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
-        );
-      },
-      version: 1,
-    );
-    //Database interrogation, query is not to make any SQL interrogation but for SELECT only
-    var query = await database.query("GAMES",
-        columns: ["DESIRED_PRICE"], where: "ID = $id");
-    double toReturn = double.parse(query[0]["DESIRED_PRICE"].toString());
+    double toReturn;
+
+    if (Platform.isWindows || Platform.isLinux) {
+      var databaseFactory = databaseFactoryFfi;
+      var db =
+          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      await db.execute('''
+              CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
+              ''');
+      var query = await db.query("GAMES",
+          columns: ["DESIRED_PRICE"], where: "ID = $id");
+      toReturn = double.parse(query[0]["DESIRED_PRICE"].toString());
+      db.close();
+    } else {
+      //Opening the database
+      final Database database = await openDatabase(
+        join(path, 'selectedGames.db'),
+        //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
+        onCreate: (db, version) {
+          return db.execute(
+            'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
+          );
+        },
+        version: 1,
+      );
+      //Database interrogation, query is not to make any SQL interrogation but for SELECT only
+      var query = await database.query("GAMES",
+          columns: ["DESIRED_PRICE"], where: "ID = $id");
+      toReturn = double.parse(query[0]["DESIRED_PRICE"].toString());
+      database.close();
+    }
     return toReturn.toString().replaceAll(".", ",");
   }
 }

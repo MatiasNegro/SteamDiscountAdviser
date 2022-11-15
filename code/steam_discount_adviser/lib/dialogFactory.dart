@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/requests.dart';
+import 'icon.dart';
 import 'providers/dataProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:steam_discount_adviser/icon.dart' as customIcon;
 
 class DialogFactory {
   final textController = TextEditingController();
@@ -80,11 +82,7 @@ class DialogFactory {
                             Navigator.pop(context);
                             context.read<GameList>().removeFromGameList(id);
                           },
-                          child: const Text(
-                            "Delete game",
-                            style: TextStyle(
-                                fontFamily: "/font/RobotoMono-Regular.ttf"),
-                          )),
+                          child: const Icon(TrashBinIcon.trash)),
                       const SizedBox(
                         width: 10.0,
                       ),
