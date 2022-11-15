@@ -62,7 +62,7 @@ class MyStatelessWidget extends StatelessWidget
   _init() async {
     await trayManager.setIcon(
       Platform.isWindows
-          ? 'assets/images/app_icon_128.png'
+          ? 'assets/images/app_icon_128.ico'
           : 'assets/images/app_icon_128.png',
     );
     //Settings for the trayManager
@@ -138,7 +138,6 @@ class MyStatelessWidget extends StatelessWidget
 
   @override
   void onWindowClose() async {
-    print("chiamato onWindowClose");
     await windowManager.hide();
     return;
   }
@@ -150,7 +149,6 @@ class MyStatelessWidget extends StatelessWidget
 
   @override
   void onTrayMenuItemClick(MenuItem menuItem) async {
-    print("Chiamato show");
     await windowManager.show();
     return;
   }
