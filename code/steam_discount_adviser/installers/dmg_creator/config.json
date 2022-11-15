@@ -1,0 +1,8 @@
+{
+    "title": "Steam Discount Adviser",
+    "icon": "app_icon.icns",
+    "contents": [
+        { "x": 448, "y": 344, "type": "link", "path": "/Applications" },
+        { "x": 192, "y": 344, "type": "file", "path": "/Users/matiasnegro/Documents/GitHub/SteamDiscountAdviser/code/steam_discount_adviser/build/macos/Build/Products/Release/steam_discount_adviser.app" }
+    ]
+}

@@ -211,6 +211,7 @@ class DialogFactory {
                           "name": name,
                           "selectedPrice": selectedPrice
                         };
+                        Navigator.pop(context);
                         context.read<GameList>().addToGameList(item);
                       },
                       child: const Text(

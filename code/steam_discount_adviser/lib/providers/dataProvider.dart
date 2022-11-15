@@ -38,7 +38,8 @@ class GameList with ChangeNotifier {
 
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
-      var db = await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      var db =
+          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
       await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
@@ -46,7 +47,9 @@ class GameList with ChangeNotifier {
       await db.insert("GAMES", {
         "ID": item["id"],
         "NAME": item["name"],
-        "DESIRED_PRICE": item["selectedPrice"]
+        "DESIRED_PRICE": (item["selectedPrice"] as String).contains(",")
+            ? (item["selectedPrice"] as String).replaceAll(",", ".")
+            : (item["selectedPrice"])
       });
     } else {
       //Opening the database (if the onCreate is necesasry)
@@ -80,7 +83,8 @@ class GameList with ChangeNotifier {
     String path = await getDatabasesPath();
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
-      var db = await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      var db =
+          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
       await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');

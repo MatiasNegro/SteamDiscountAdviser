@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-/// 
+///
 
 class SteamRequest {
   var dio = Dio();
@@ -116,7 +116,10 @@ class SteamRequest {
       //Database interrogation, query is not to make any SQL interrogation but for SELECT only
       var query = await database.query("GAMES",
           columns: ["DESIRED_PRICE"], where: "ID = $id");
-      toReturn = double.parse(query[0]["DESIRED_PRICE"].toString());
+      toReturn = double.parse(
+          (query[0]["DESIRED_PRICE"] as String).contains(',')
+              ? (query[0]["DESIRED_PRICE"] as String).replaceAll(",", ".").toString()
+              : (query[0]["DESIRED_PRICE"].toString()));
       database.close();
     }
     return toReturn.toString().replaceAll(".", ",");
