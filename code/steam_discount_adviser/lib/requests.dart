@@ -53,8 +53,7 @@ class SteamRequest {
 
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
-      var db =
-          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
       await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
@@ -92,8 +91,7 @@ class SteamRequest {
 
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
-      var db =
-          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
       await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
@@ -118,7 +116,9 @@ class SteamRequest {
           columns: ["DESIRED_PRICE"], where: "ID = $id");
       toReturn = double.parse(
           (query[0]["DESIRED_PRICE"] as String).contains(',')
-              ? (query[0]["DESIRED_PRICE"] as String).replaceAll(",", ".").toString()
+              ? (query[0]["DESIRED_PRICE"] as String)
+                  .replaceAll(",", ".")
+                  .toString()
               : (query[0]["DESIRED_PRICE"].toString()));
       database.close();
     }

@@ -38,8 +38,7 @@ class GameList with ChangeNotifier {
 
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
-      var db =
-          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
       await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
@@ -83,8 +82,7 @@ class GameList with ChangeNotifier {
     String path = await getDatabasesPath();
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
-      var db =
-          await databaseFactory.openDatabase(join(path, 'selectedGames.db'));
+      var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
       await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
