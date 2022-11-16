@@ -54,6 +54,7 @@ dependencies:
   window_manager: ^0.2.7
   tray_manager: ^0.2.0
   dartdoc: ^6.1.1
+  mockito: ^5.3.2
   
 dev_dependencies:
   flutter_test:

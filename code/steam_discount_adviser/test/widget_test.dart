@@ -7,18 +7,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
+import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/main.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
+import 'package:steam_discount_adviser/SchedulerFactory.dart';
 
+@GenerateMocks([SchedulerFactory])
 void main() {
   testWidgets("Right column testing", ((tester) async {
     await tester.pumpWidget(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => GameList())],
-      child: const MyApp(),
+      child: TileList(),
     ));
-
-   
   }));
 }

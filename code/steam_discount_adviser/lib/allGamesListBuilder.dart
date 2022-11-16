@@ -139,7 +139,17 @@ class _TileListState extends State<TileList> {
                                         var name = data[index]["name"];
                                         var gameInfo = await SteamRequest()
                                             .getGameDetails(id);
-                                        if (gameInfo["is_free"] == false &&
+                                        if (!gameInfo
+                                            .containsKey("final_formatted")) {
+                                          showDialog(
+                                              context: context,
+                                              builder: ((context) {
+                                                return this
+                                                    .myDialogF
+                                                    .ExceptionDialog(context);
+                                              }));
+                                        } else if (gameInfo["is_free"] ==
+                                                false &&
                                             // ignore: unrelated_type_equality_checks
                                             (gameInfo["type"] == "game" ||
                                                     gameInfo["type"]) ==
@@ -199,7 +209,16 @@ class _TileListState extends State<TileList> {
                                   var name = data[index]["name"];
                                   var gameInfo =
                                       await SteamRequest().getGameDetails(id);
-                                  if (gameInfo["is_free"] == false &&
+                                  if (!gameInfo
+                                      .containsKey("final_formatted")) {
+                                    showDialog(
+                                        context: context,
+                                        builder: ((context) {
+                                          return this
+                                              .myDialogF
+                                              .ExceptionDialog(context);
+                                        }));
+                                  } else if (gameInfo["is_free"] == false &&
                                       (gameInfo["type"] == "game" ||
                                           gameInfo["type"] == "dlc")) {
                                     showDialog(

@@ -28,7 +28,6 @@ void main() {
     //String path = await getDatabasesPath();
     //Opening the database
     ft.TestWidgetsFlutterBinding.ensureInitialized();
-
     Database database = await openDatabase(
       inMemoryDatabasePath,
       //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
@@ -42,4 +41,28 @@ void main() {
 
     expect(database.isOpen, true);
   });
+
+  test("Given a game ID in databse return the stored desired price", (() async {
+    Database database = await openDatabase(
+      inMemoryDatabasePath,
+      //Alwais put the onCreate parameter, if not the db will not return anything even if it exist already
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)',
+        );
+      },
+      version: 1,
+    );
+
+    await database.insert(
+        "GAMES", {"ID": "0", "NAME": "Test_Game", "DESIRED_PRICE": "1"});
+
+    String desiredPrice = await database
+        .query("GAMES", columns: ["DESIRED_PRICE"], where: "ID = 0")
+        .then((value) {
+      return value.toList()[0].toString();
+    });
+
+    expect(desiredPrice, "1");
+  }));
 }
