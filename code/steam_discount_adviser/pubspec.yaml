@@ -101,7 +101,6 @@ flutter:
     - family: TrashBinIcon
       fonts:
         - asset: font/TrashBinIcon.ttf
-
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

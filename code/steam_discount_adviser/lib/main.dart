@@ -3,10 +3,12 @@ import 'package:flutter/material.dart' hide MenuItem;
 import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
+import 'package:steam_discount_adviser/icon.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
 import 'package:steam_discount_adviser/SchedulerFactory.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:tray_manager/tray_manager.dart';
+import 'package:steam_discount_adviser/dialogFactory.dart';
 
 void main() async {
   //Scheduler to notify the user if a game is in discount at 7 PM CEST
@@ -66,23 +68,23 @@ class MyStatelessWidget extends StatelessWidget
           : 'assets/images/app_icon_128.png',
     );
     //Settings for the trayManager
-    Menu menu = Menu(
-      items: [
-        MenuItem(
-          key: 'show_window',
-          label: 'Show Window',
-        ),
-        MenuItem(
-          key: 'set_ignore_mouse_events',
-          label: 'setIgnoreMouseEvents(false)',
-        ),
-        MenuItem.separator(),
-        MenuItem(
-          key: 'exit_app',
-          label: 'Exit App',
-        ),
-      ],
-    );
+    Menu menu;
+    if (!Platform.isLinux) {
+      menu = Menu(
+        items: [
+          MenuItem(
+            key: 'exit_app',
+            label: 'Exit App',
+            onClick: (menuItem) async {
+              exit(0);
+            },
+          ),
+        ],
+      );
+    } else {
+      menu = Menu();
+    }
+
     await trayManager.setContextMenu(menu);
     await windowManager.setMinimumSize(const Size(712.0, 490.0));
   }
@@ -134,6 +136,15 @@ class MyStatelessWidget extends StatelessWidget
         ],
       ),
     );
+  }
+
+  @override
+  void onTrayIconRightMouseDown() async {
+    if (Platform.isLinux) {
+      exit(0);
+    } else {
+      await trayManager.popUpContextMenu();
+    }
   }
 
   @override

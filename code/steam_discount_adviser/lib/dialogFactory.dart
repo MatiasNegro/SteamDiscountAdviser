@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/requests.dart';
+import 'package:window_manager/window_manager.dart';
 import 'icon.dart';
 import 'providers/dataProvider.dart';
 import 'package:provider/provider.dart';
