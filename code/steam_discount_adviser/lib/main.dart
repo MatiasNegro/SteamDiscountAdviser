@@ -9,6 +9,7 @@ import 'package:steam_discount_adviser/SchedulerFactory.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 void main() async {
   //Scheduler to notify the user if a game is in discount at 7 PM CEST

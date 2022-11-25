@@ -12,6 +12,7 @@ import 'package:path/path.dart';
 import 'package:steam_discount_adviser/providers/dataProvider.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart';
 import 'package:steam_discount_adviser/widgetFactory.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class TileList extends StatefulWidget {
   TileList({Key? key}) : super(key: key);
@@ -22,11 +23,13 @@ class TileList extends StatefulWidget {
 
 class _TileListState extends State<TileList> {
   final textController = TextEditingController();
+  final Connectivity _connectivity = Connectivity();
 
   ///[data] will be the list of the steam games library
   // ignore: prefer_typing_uninitialized_variables
   List data = [];
-  late var myDialogF;
+  late DialogFactory myDialogF;
+  bool connectionStatus = false;
 
   /// [dataBackup] is needed to make a searchable bar
   // ignore: prefer_typing_uninitialized_variables
@@ -48,6 +51,14 @@ class _TileListState extends State<TileList> {
       setState(() {});
     });
     this.myDialogF = DialogFactory();
+    _connectivity.checkConnectivity().then((value) {
+      if (value == ConnectivityResult.none) {
+        connectionStatus = false;
+      } else {
+        connectionStatus = true;
+      }
+      setState(() {});
+    });
   }
 
   ///[_runFilter(String enteredKeyword)] is the business logic of the searchbar
@@ -121,56 +132,70 @@ class _TileListState extends State<TileList> {
                 ),
               ),
               const SizedBox(height: 10),
-              Expanded(
-                  child: (data as List).isEmpty
-                      ? Visibility(
-                          visible: (data as List).isEmpty,
-                          child: WidgetFactory().styledCircularIndicator(),
-                        )
-                      : ListView.builder(
-                          controller: ScrollController(),
-                          itemCount: (data as List).length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              color: Colors.blueGrey[300],
-                              child: ListTile(
-                                title: Text(data[index]["name"]),
-                                onTap: () async {
-                                  var id = data[index]["appid"];
-                                  var name = data[index]["name"];
-                                  var gameInfo =
-                                      await SteamRequest().getGameDetails(id);
-                                  if (!gameInfo.containsKey("price_overview")) {
-                                    showDialog(
-                                        context: context,
-                                        builder: ((context) {
-                                          return this
-                                              .myDialogF
-                                              .ExceptionDialog(context);
-                                        }));
-                                  } else if (gameInfo["is_free"] == false &&
-                                      (gameInfo["type"] == "game" ||
-                                          gameInfo["type"] == "dlc")) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return this.myDialogF.allGamesDialog(
-                                              id, name, gameInfo, context);
-                                        });
-                                  } else {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return this
-                                              .myDialogF
-                                              .allGamesDialogFree(
-                                                  id, name, context);
-                                        });
-                                  }
-                                },
-                              ),
-                            );
-                          })),
+              !connectionStatus
+                  ? const Expanded(
+                      child: Center(
+                        child: Text(
+                          "There is no connection 🥺",
+                          style: TextStyle(
+                              fontFamily: "font/RobotoMono-Regular.ttf",
+                              fontSize: 32.0),
+                        ),
+                      ),
+                    )
+                  : Expanded(
+                      child: (data as List).isEmpty
+                          ? Visibility(
+                              visible: (data as List).isEmpty,
+                              child: WidgetFactory().styledCircularIndicator(),
+                            )
+                          : ListView.builder(
+                              controller: ScrollController(),
+                              itemCount: (data as List).length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  color: Colors.blueGrey[300],
+                                  child: ListTile(
+                                    title: Text(data[index]["name"]),
+                                    onTap: () async {
+                                      var id = data[index]["appid"];
+                                      var name = data[index]["name"];
+                                      var gameInfo = await SteamRequest()
+                                          .getGameDetails(id);
+                                      if (!gameInfo
+                                          .containsKey("price_overview")) {
+                                        showDialog(
+                                            context: context,
+                                            builder: ((context) {
+                                              return this
+                                                  .myDialogF
+                                                  .ExceptionDialog(context);
+                                            }));
+                                      } else if (gameInfo["is_free"] == false &&
+                                          (gameInfo["type"] == "game" ||
+                                              gameInfo["type"] == "dlc")) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return this
+                                                  .myDialogF
+                                                  .allGamesDialog(id, name,
+                                                      gameInfo, context);
+                                            });
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return this
+                                                  .myDialogF
+                                                  .allGamesDialogFree(
+                                                      id, name, context);
+                                            });
+                                      }
+                                    },
+                                  ),
+                                );
+                              })),
             ]),
       ),
     );
