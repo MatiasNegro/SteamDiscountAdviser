@@ -2,14 +2,14 @@
 // DO-NOT REMOVE THE UNUSED IMPORTS, FLUTTER SAYS WRONG
 //
 import 'package:flutter/material.dart';
-import 'package:local_notifier/local_notifier.dart';
+//import 'package:local_notifier/local_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/requests.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:steam_discount_adviser/providers/dataProvider.dart';
+//import 'package:path_provider/path_provider.dart';
+//import 'package:sqflite/sqflite.dart';
+//import 'package:path/path.dart';
+//import 'package:steam_discount_adviser/providers/dataProvider.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart';
 import 'package:steam_discount_adviser/widgetFactory.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -36,6 +36,7 @@ class _TileListState extends State<TileList> {
   late var dataBackup;
   List results = [];
   bool flag = false;
+  String connectionText = " ";
 
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -57,7 +58,9 @@ class _TileListState extends State<TileList> {
       } else {
         connectionStatus = true;
       }
-      setState(() {});
+      setState(() {
+        connectionText = "There is no connection 🥺";
+      });
     });
   }
 
@@ -133,11 +136,11 @@ class _TileListState extends State<TileList> {
               ),
               const SizedBox(height: 10),
               !connectionStatus
-                  ? const Expanded(
+                  ? Expanded(
                       child: Center(
                         child: Text(
-                          "There is no connection 🥺",
-                          style: TextStyle(
+                          connectionText,
+                          style: const TextStyle(
                               fontFamily: "font/RobotoMono-Regular.ttf",
                               fontSize: 32.0),
                         ),
