@@ -4,22 +4,20 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/env.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-///
-
+///[SteamRequest] gives all the functionality for API calls with the SteamAPI.
 class SteamRequest {
+  ///[Dio()] is the I/O package for the API requests.
   var dio = Dio();
 
-  //Returns the list of name and id of every game on steam
+  ///Returns the list of name and id of every game on steam
   Future<List> getAllGames() async {
     var response = await dio.get(getAllGamesApi);
-    late var toReturn;
+    late List toReturn;
     //The response is a string, so its converted into a Map
     var data = response.data as Map;
     var appList = data["applist"];
@@ -27,7 +25,7 @@ class SteamRequest {
     //toRetrun is now a List disguised as a Map, so we can without problems cast it and
     //Filter the games we do not want to appear.
     //Removing elements where there is no name
-    (toReturn as List).removeWhere((element) =>
+    toReturn.removeWhere((element) =>
         element["name"].isEmpty ||
         element["appid"] == 216938 ||
         (element["name"] as String).contains("test"));
@@ -35,7 +33,7 @@ class SteamRequest {
     return toReturn;
   }
 
-  //returns the details of a given game
+  ///returns the details of a given game
   Future<Map> getGameDetails(id) async {
     var response = await dio.get("$getGameDetailsFromIdApi$id&currency=3");
     late Map toReturn = {};
@@ -45,12 +43,14 @@ class SteamRequest {
     return toReturn;
   }
 
-  //Returns the games we added to the List. Data is stored inside a sqlite3 database
-  //accessible only by the app.
+  ///Returns the games we added to the List. Data is stored inside a sqlite3 database
+  ///accessible only by the app.
   Future<List> getSelectedGames() async {
     String path = await getDatabasesPath();
     List toReturn = [];
 
+    //If the platform is windows or linux the DB interface is given by a different package instead of the
+    //MacOS one
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
       var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -85,10 +85,13 @@ class SteamRequest {
     return toReturn;
   }
 
+  ///[getSelectedPrice(String id)] returns the ["SELECTED_PRICE"] field of a give [id] from the
+  ///internal database.
   Future<String> getSelectedPrice(id) async {
     String path = await getDatabasesPath();
     double toReturn;
-
+    //If the platform is windows or linux the DB interface is given by a different package instead of the
+    //MacOS one
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
       var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -114,6 +117,8 @@ class SteamRequest {
       //Database interrogation, query is not to make any SQL interrogation but for SELECT only
       var query = await database.query("GAMES",
           columns: ["DESIRED_PRICE"], where: "ID = $id");
+      //Result parsing to avoid [double.parse()] errors , so we remove the "," character if the user uses
+      //it instead of the "." one (if the user puts it).
       toReturn = double.parse(
           (query[0]["DESIRED_PRICE"] as String).contains(',')
               ? (query[0]["DESIRED_PRICE"] as String)
@@ -122,6 +127,7 @@ class SteamRequest {
               : (query[0]["DESIRED_PRICE"].toString()));
       database.close();
     }
+    //Reparsing the string for univocque writing style of the prices
     return toReturn.toString().replaceAll(".", ",");
   }
 }

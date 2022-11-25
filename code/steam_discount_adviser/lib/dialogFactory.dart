@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:steam_discount_adviser/requests.dart';
-import 'package:window_manager/window_manager.dart';
-import 'icon.dart';
 import 'providers/dataProvider.dart';
 import 'package:provider/provider.dart';
-import 'package:steam_discount_adviser/icon.dart' as customIcon;
+import 'package:steam_discount_adviser/icon.dart';
 
+///[DialogFactory] contains all the Dialog types used in the application.
 class DialogFactory {
+  ///[textController] is used for all the dialogs where is needed a price.
   final textController = TextEditingController();
 
   Widget SelectedGamesDialog(
@@ -165,9 +164,34 @@ class DialogFactory {
                       width: 180.0,
                       height: 30.0,
                       child: Center(
-                        child: TextField(
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            bool parsePriceFlag = true;
+                            try {
+                              if (value != null) {
+                                double.parse(value.replaceAll(",", "."));
+                              }
+                            } catch (Exception) {
+                              parsePriceFlag = false;
+                            }
+                            if (parsePriceFlag) {
+                              return null;
+                            }
+                            return "Invalid input";
+                          },
                           textAlign: TextAlign.start,
                           decoration: InputDecoration(
+                            errorStyle: TextStyle(
+                                //TODO: FIX VALIDATOR HEIGHT ERROR!
+                                ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.red),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.red),
+                                borderRadius: BorderRadius.circular(30)),
                             hintText: "Insert desired price",
                             hintStyle: const TextStyle(
                               fontSize: 12.0,
@@ -206,7 +230,8 @@ class DialogFactory {
                             borderRadius: BorderRadius.circular(50))),
                       ),
                       onPressed: () {
-                        var selectedPrice = textController.value.text;
+                        String selectedPrice = textController.value.text;
+
                         Map item = {
                           "id": id,
                           "name": name,

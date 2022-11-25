@@ -1,19 +1,11 @@
-//
-// DO-NOT REMOVE THE UNUSED IMPORTS, FLUTTER SAYS WRONG
-//
 import 'package:flutter/material.dart';
-//import 'package:local_notifier/local_notifier.dart';
-import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/requests.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
-//import 'package:path_provider/path_provider.dart';
-//import 'package:sqflite/sqflite.dart';
-//import 'package:path/path.dart';
-//import 'package:steam_discount_adviser/providers/dataProvider.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart';
 import 'package:steam_discount_adviser/widgetFactory.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+///[TileList] is the main widget of the right column. It shows all the games given by the SteamApi/allapps/v2.0
+///if there is internet connection, else it shows a message that informs the user about the connection status.
 class TileList extends StatefulWidget {
   TileList({Key? key}) : super(key: key);
 
@@ -22,6 +14,7 @@ class TileList extends StatefulWidget {
 }
 
 class _TileListState extends State<TileList> {
+  //Controller for the TextField used to serach the games.
   final textController = TextEditingController();
   final Connectivity _connectivity = Connectivity();
 
@@ -33,7 +26,7 @@ class _TileListState extends State<TileList> {
 
   /// [dataBackup] is needed to make a searchable bar
   // ignore: prefer_typing_uninitialized_variables
-  late var dataBackup;
+  late List dataBackup;
   List results = [];
   bool flag = false;
   String connectionText = " ";
@@ -161,8 +154,8 @@ class _TileListState extends State<TileList> {
                                   child: ListTile(
                                     title: Text(data[index]["name"]),
                                     onTap: () async {
-                                      var id = data[index]["appid"];
-                                      var name = data[index]["name"];
+                                      int id = data[index]["appid"];
+                                      String name = data[index]["name"];
                                       var gameInfo = await SteamRequest()
                                           .getGameDetails(id);
                                       if (!gameInfo
