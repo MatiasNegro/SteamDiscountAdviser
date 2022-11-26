@@ -7,8 +7,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:steam_discount_adviser/dialogFactory.dart' as df;
 import 'package:steam_discount_adviser/widgetFactory.dart';
-import 'package:steam_discount_adviser/notificator.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class GameList with ChangeNotifier {
   int counter = 0;
@@ -22,11 +22,7 @@ class GameList with ChangeNotifier {
   bool backupFlag = true;
   get gameList => _data;
   bool firstIterationFlag = true;
-
-  /*Future<List> takeList() async {
-    List toReturn = await SteamRequest().getSelectedGames as List;
-    return toReturn;
-  }*/
+  Connectivity _connectivity = Connectivity();
 
   void changeFlag() {
     backupFlag = !backupFlag;
@@ -180,27 +176,45 @@ class GameList with ChangeNotifier {
                 child: ListTile(
                   title: Text(_data[index]["NAME"]),
                   onTap: () async {
-                    var id = _data[index]["ID"];
-                    var name = _data[index]["NAME"];
-                    // ignore: prefer_typing_uninitialized_variables
-                    var price;
-                    var selectedPrice;
-                    //removeFromGameList(id);
-                    //Retriving the game price informations
-                    await SteamRequest().getGameDetails(id).then((value) {
-                      price = value["price_overview"]["final_formatted"];
-                    });
-                    await SteamRequest().getSelectedPrice(id).then((value) {
-                      selectedPrice = value;
+                    bool connectionStatus = false;
+                    await _connectivity.checkConnectivity().then((value) {
+                      connectionStatus =
+                          value == ConnectivityResult.none ? false : true;
                     });
 
                     //Pop-up dialog on tile click
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return this.dialogFactory.SelectedGamesDialog(
-                              id, name, price, selectedPrice, context);
-                        });
+                    if (!connectionStatus) {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return this
+                                .dialogFactory
+                                .noConnectionDialog(context);
+                          });
+                    } else {
+                      var id = _data[index]["ID"];
+                      var name = _data[index]["NAME"];
+                      // ignore: prefer_typing_uninitialized_variables
+                      var price;
+                      var selectedPrice;
+                      //removeFromGameList(id);
+                      //Retriving the game price informations
+                      await await SteamRequest()
+                          .getGameDetails(id)
+                          .then((value) {
+                        price = value["price_overview"]["final_formatted"];
+                      });
+                      await SteamRequest().getSelectedPrice(id).then((value) {
+                        selectedPrice = value;
+                      });
+
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return this.dialogFactory.SelectedGamesDialog(
+                                id, name, price, selectedPrice, context);
+                          });
+                    }
                   },
                 ),
               );

@@ -349,4 +349,47 @@ class DialogFactory {
               ],
             )));
   }
+
+  Widget noConnectionDialog(BuildContext context) {
+    return Dialog(
+        backgroundColor: Colors.blueGrey[100],
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+            constraints: const BoxConstraints(minHeight: 140, minWidth: 350),
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.25,
+            child: Column(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey[200],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Text(
+                    "Sorry for the incovenient",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: "/font/RobotoMono-Regular.ttf"),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                const Center(
+                  child: Text(
+                    "There is no connection \u{1F625}",
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        fontFamily: "/font/RobotoMono-Regular.ttf"),
+                  ),
+                )
+              ],
+            )));
+  }
 }
