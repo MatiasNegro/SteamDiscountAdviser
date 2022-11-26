@@ -178,15 +178,18 @@ class DialogFactory {
                             if (parsePriceFlag) {
                               return null;
                             }
-                            return "Invalid input";
+
+                            return '';
                           },
                           textAlign: TextAlign.start,
                           decoration: InputDecoration(
-                            errorStyle: TextStyle(
-                                //TODO: FIX VALIDATOR HEIGHT ERROR!
-                                ),
+                            errorStyle: const TextStyle(
+                              height: 0,
+                            ),
                             focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.red),
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                              ),
                               borderRadius: BorderRadius.circular(30),
                             ),
                             errorBorder: OutlineInputBorder(
@@ -230,6 +233,15 @@ class DialogFactory {
                             borderRadius: BorderRadius.circular(50))),
                       ),
                       onPressed: () {
+                        try {
+                          if (textController.value.text != null) {
+                            double.parse(
+                                textController.value.text.replaceAll(",", "."));
+                          }
+                        } catch (Exception) {
+                          return;
+                        }
+
                         String selectedPrice = textController.value.text;
 
                         Map item = {
