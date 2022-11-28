@@ -1,3 +1,6 @@
+import 'dart:html';
+import 'dart:core';
+import 'dart:io' as dtio;
 import 'package:flutter/material.dart';
 import 'package:steam_discount_adviser/utility/requests.dart';
 import 'package:steam_discount_adviser/utility/dialogFactory.dart';
@@ -52,7 +55,11 @@ class _TileListState extends State<TileList> {
         connectionStatus = true;
       }
       setState(() {
-        connectionText = "There is no connection 🥺";
+        if (dtio.Platform.isWindows || dtio.Platform.isLinux) {
+          connectionText = "There is no connection :'(";
+        } else {
+          connectionText = "There is no connection 🥺";
+        }
       });
     });
   }
