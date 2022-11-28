@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:steam_discount_adviser/requests.dart';
-import 'package:steam_discount_adviser/dialogFactory.dart';
-import 'package:steam_discount_adviser/widgetFactory.dart';
+import 'package:steam_discount_adviser/utility/requests.dart';
+import 'package:steam_discount_adviser/utility/dialogFactory.dart';
+import 'package:steam_discount_adviser/utility/widgetFactory.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 ///[TileList] is the main widget of the right column. It shows all the games given by the SteamApi/allapps/v2.0

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'providers/dataProvider.dart';
 import 'package:provider/provider.dart';
-import 'package:steam_discount_adviser/icon.dart';
+import 'package:steam_discount_adviser/utility/icon.dart';
 
 ///[DialogFactory] contains all the Dialog types used in the application.
 class DialogFactory {
   ///[textController] is used for all the dialogs where is needed a price.
   final textController = TextEditingController();
 
+  ///Dialog printed onClick() on a left column card showin the selectedGame information and giving
+  ///the option to remove the game from the list
   Widget SelectedGamesDialog(
       id, name, price, selectedPrice, BuildContext context) {
     return Dialog(
@@ -105,6 +107,7 @@ class DialogFactory {
             )));
   }
 
+  ///Dialog printed onClick() of a card in the right column giving the option to add the game to de selectedGames list.
   Widget allGamesDialog(id, name, gameInfo, BuildContext context) {
     return Dialog(
         backgroundColor: Colors.blueGrey[100],
@@ -233,6 +236,7 @@ class DialogFactory {
                             borderRadius: BorderRadius.circular(50))),
                       ),
                       onPressed: () {
+                        //If the TextField is not parsable don't add the game to the list.
                         try {
                           if (textController.value.text != null) {
                             double.parse(
@@ -241,6 +245,8 @@ class DialogFactory {
                         } catch (Exception) {
                           return;
                         }
+
+                        ///Else, add it.
 
                         String selectedPrice = textController.value.text;
 
@@ -262,6 +268,7 @@ class DialogFactory {
             )));
   }
 
+  ///Dialog printed onClick of a right column card when the game is free.
   Widget allGamesDialogFree(id, name, BuildContext context) {
     return Dialog(
         backgroundColor: Colors.blueGrey[100],
@@ -350,6 +357,7 @@ class DialogFactory {
             )));
   }
 
+  ///Dialog printed onClick() on one of the left column cards when there is no connection.
   Widget noConnectionDialog(BuildContext context) {
     return Dialog(
         backgroundColor: Colors.blueGrey[100],

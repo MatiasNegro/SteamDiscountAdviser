@@ -4,7 +4,7 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:steam_discount_adviser/env.dart';
+import 'package:steam_discount_adviser/utility/env.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';

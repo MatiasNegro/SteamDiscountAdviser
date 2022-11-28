@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:local_notifier/local_notifier.dart';
-import 'package:steam_discount_adviser/requests.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:steam_discount_adviser/utility/requests.dart';
 
 class SteamNotificator {
   Notify(id, selectedPrice) async {

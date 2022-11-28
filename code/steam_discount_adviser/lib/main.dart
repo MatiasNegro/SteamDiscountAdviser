@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart' hide MenuItem;
 import 'package:provider/provider.dart';
-import 'package:steam_discount_adviser/allGamesListBuilder.dart';
-import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
-import 'package:steam_discount_adviser/providers/dataProvider.dart';
-import 'package:steam_discount_adviser/SchedulerFactory.dart';
+import 'package:steam_discount_adviser/utility/allGamesListBuilder.dart';
+import 'package:steam_discount_adviser/utility/gameListWidgetBuilder.dart';
+import 'package:steam_discount_adviser/utility/providers/dataProvider.dart';
+import 'package:steam_discount_adviser/utility/SchedulerFactory.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:tray_manager/tray_manager.dart';
 
@@ -88,7 +88,7 @@ class MyStatelessWidget extends StatelessWidget
     }
 
     await trayManager.setContextMenu(menu);
-    await windowManager.setMinimumSize(const Size(712.0, 490.0));
+    await windowManager.setMinimumSize(const Size(712.0, 500.0));
   }
 
   @override

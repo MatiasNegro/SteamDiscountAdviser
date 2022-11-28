@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+///Custom icon class to insert it in the Dialogs where there is the option to delete something.
+
 class TrashBinIcon {
   TrashBinIcon._();
 

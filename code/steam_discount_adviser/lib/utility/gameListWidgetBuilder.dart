@@ -2,8 +2,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:steam_discount_adviser/requests.dart';
-import 'package:steam_discount_adviser/providers/dataProvider.dart';
+import 'package:steam_discount_adviser/utility/providers/dataProvider.dart';
 
 class SelectedGames extends StatefulWidget {
   SelectedGames({Key? key}) : super(key: key);
@@ -90,14 +89,11 @@ class _SelectedGamesState extends State<SelectedGames> {
 
             //Main widget, this is the list of selected games
             context.watch<GameList>().displayedData,
-            
-            
-            
           ],
         ),
       ),
     );
-    
+
     /*if (context.watch<GameList>().hasChanged) {
       setState(() {
         context.watch<GameList>().displayedData;

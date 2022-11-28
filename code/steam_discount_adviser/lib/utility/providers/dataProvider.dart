@@ -1,12 +1,12 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:steam_discount_adviser/notificator.dart';
-import 'package:steam_discount_adviser/requests.dart';
+import 'package:steam_discount_adviser/utility/notificator.dart';
+import 'package:steam_discount_adviser/utility/requests.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:steam_discount_adviser/dialogFactory.dart' as df;
-import 'package:steam_discount_adviser/widgetFactory.dart';
+import 'package:steam_discount_adviser/utility/dialogFactory.dart' as df;
+import 'package:steam_discount_adviser/utility/widgetFactory.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 

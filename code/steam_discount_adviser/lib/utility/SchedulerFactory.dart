@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thread/thread.dart';
-import 'package:steam_discount_adviser/notificator.dart';
+import 'package:steam_discount_adviser/utility/notificator.dart';
 import 'package:cron/cron.dart';
 
 class SchedulerFactory {
