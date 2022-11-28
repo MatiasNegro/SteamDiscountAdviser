@@ -10,7 +10,7 @@ class DialogFactory {
 
   ///Dialog printed onClick() on a left column card showin the selectedGame information and giving
   ///the option to remove the game from the list
-  Widget SelectedGamesDialog(
+  Widget selectedGamesDialog(
       id, name, price, selectedPrice, BuildContext context) {
     return Dialog(
         backgroundColor: Colors.blueGrey[100],
@@ -170,10 +170,16 @@ class DialogFactory {
                         child: TextFormField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
+                            //If the TextField value is not parsable or the parsed value is <= 0.0 change the TextFormField
+                            //color to red.
                             bool parsePriceFlag = true;
                             try {
                               if (value != null) {
-                                double.parse(value.replaceAll(",", "."));
+                                double toTest =
+                                    double.parse(value.replaceAll(",", "."));
+                                if (toTest <= 0.0) {
+                                  parsePriceFlag = false;
+                                }
                               }
                             } catch (Exception) {
                               parsePriceFlag = false;
@@ -236,11 +242,14 @@ class DialogFactory {
                             borderRadius: BorderRadius.circular(50))),
                       ),
                       onPressed: () {
-                        //If the TextField is not parsable don't add the game to the list.
+                        //If the TextField is not parsable or the parsed value is <= 0.0 don't add the game to the list.
                         try {
                           if (textController.value.text != null) {
-                            double.parse(
+                            double toTest = double.parse(
                                 textController.value.text.replaceAll(",", "."));
+                            if (toTest <= 0.0) {
+                              throw Exception();
+                            }
                           }
                         } catch (Exception) {
                           return;

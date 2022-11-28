@@ -18,11 +18,11 @@ class GameList with ChangeNotifier {
   var dialogFactory = df.DialogFactory();
 
   ///[databaseBackup] contains the gameList at the iteration i-1
-  var databaseBackup;
+  late List databaseBackup;
   bool backupFlag = true;
   get gameList => _data;
   bool firstIterationFlag = true;
-  Connectivity _connectivity = Connectivity();
+  final Connectivity _connectivity = Connectivity();
 
   void changeFlag() {
     backupFlag = !backupFlag;
@@ -107,19 +107,7 @@ class GameList with ChangeNotifier {
     notifyListeners();
   }
 
-  dropGameList() {
-    //...
-    notifyListeners();
-  }
-
-  notifyLeftBuilder() {
-    hasChanged = true;
-    notifyListeners();
-    hasChanged = false;
-  }
-
   Widget buildListOfGames() {
-    var isLoading = true;
     return Expanded(
         //Creation of the list.
         child: FutureBuilder(
@@ -127,7 +115,6 @@ class GameList with ChangeNotifier {
       future: _data = SteamRequest().getSelectedGames(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          isLoading = false;
           _data = snapshot.data;
 
           counter++;
@@ -196,12 +183,10 @@ class GameList with ChangeNotifier {
                       var name = _data[index]["NAME"];
                       // ignore: prefer_typing_uninitialized_variables
                       var price;
-                      var selectedPrice;
+                      late String selectedPrice;
                       //removeFromGameList(id);
                       //Retriving the game price informations
-                      await await SteamRequest()
-                          .getGameDetails(id)
-                          .then((value) {
+                      await SteamRequest().getGameDetails(id).then((value) {
                         price = value["price_overview"]["final_formatted"];
                       });
                       await SteamRequest().getSelectedPrice(id).then((value) {
@@ -211,7 +196,7 @@ class GameList with ChangeNotifier {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return this.dialogFactory.SelectedGamesDialog(
+                            return this.dialogFactory.selectedGamesDialog(
                                 id, name, price, selectedPrice, context);
                           });
                     }
