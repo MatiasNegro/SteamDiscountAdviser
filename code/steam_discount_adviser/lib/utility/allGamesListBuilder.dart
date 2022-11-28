@@ -4,7 +4,7 @@ import 'package:steam_discount_adviser/utility/dialogFactory.dart';
 import 'package:steam_discount_adviser/utility/widgetFactory.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-///[TileList] is the main widget of the right column. It shows all the games given by the SteamApi/allapps/v2.0
+///Main widget of the right column. It shows all the games given by the SteamApi/allapps/v2.0
 ///if there is internet connection, else it shows a message that informs the user about the connection status.
 class TileList extends StatefulWidget {
   TileList({Key? key}) : super(key: key);

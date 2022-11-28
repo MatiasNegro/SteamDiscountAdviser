@@ -43,16 +43,15 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: _title,
       home: Scaffold(
-        body: MyStatelessWidget(),
+        body: MainWidget(),
       ),
     );
   }
 }
 
 ///Main widget, it creates the scheleton of the application dividing it in two separate columns
-class MyStatelessWidget extends StatelessWidget
-    with TrayListener, WindowListener {
-  const MyStatelessWidget({Key? key}) : super(key: key);
+class MainWidget extends StatelessWidget with TrayListener, WindowListener {
+  const MainWidget({Key? key}) : super(key: key);
 
   ///Adding listeners to the Tray_Manager and the Window_Manager
   void initState() {

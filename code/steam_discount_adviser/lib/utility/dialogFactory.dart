@@ -3,7 +3,7 @@ import 'providers/dataProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/utility/icon.dart';
 
-///[DialogFactory] contains all the Dialog types used in the application.
+///Contains all the Dialog types used in the application.
 class DialogFactory {
   ///[textController] is used for all the dialogs where is needed a price.
   final textController = TextEditingController();
@@ -56,7 +56,6 @@ class DialogFactory {
                     const SizedBox(
                       width: 10,
                     ),
-                    // ignore: prefer_interpolation_to_compose_strings
                     Text(
                       "selected price:  $selectedPrice",
                       style: const TextStyle(

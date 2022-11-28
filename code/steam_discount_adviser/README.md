@@ -1,16 +1,8 @@
-# steam_discount_adviser
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Steam Discount Adviser
+## Introduction
+Steam discount adviser is an application capable of notify an user when a (or multiple) selected game is in discount under a desired price.
+This is the software engineering class project of Matias Negro and Daniele Greco.
+## GitHub links
+[GitHub of the project](https://github.com/MatiasNegro/SteamDiscountAdviser)<br>
+[Matias Negro's GitHub page](https://github.com/MatiasNegro)<br>
+[Daniele Greco's GitHub page](https://github.com/DaniGreek)

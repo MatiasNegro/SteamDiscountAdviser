@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:steam_discount_adviser/utility/providers/dataProvider.dart';
 
+///Left column widget.
+///
+///This contains the Logo of the application and the [dataProvider()].
 class SelectedGames extends StatefulWidget {
   SelectedGames({Key? key}) : super(key: key);
 
@@ -21,6 +24,7 @@ class _SelectedGamesState extends State<SelectedGames> {
     super.initState();
   }
 
+  ///Main widget
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -93,12 +97,5 @@ class _SelectedGamesState extends State<SelectedGames> {
         ),
       ),
     );
-
-    /*if (context.watch<GameList>().hasChanged) {
-      setState(() {
-        context.watch<GameList>().displayedData;
-      });
-    }
-    return context.watch<GameList>().displayedData;*/
   }
 }

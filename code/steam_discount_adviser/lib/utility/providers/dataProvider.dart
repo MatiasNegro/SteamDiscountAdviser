@@ -10,6 +10,7 @@ import 'package:steam_discount_adviser/utility/widgetFactory.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+///Left column widget that represent the selected games from the steam list in the down section.
 class GameList with ChangeNotifier {
   int counter = 0;
   late var _data;
@@ -17,21 +18,24 @@ class GameList with ChangeNotifier {
   late var displayedData = buildListOfGames();
   var dialogFactory = df.DialogFactory();
 
-  ///[databaseBackup] contains the gameList at the iteration i-1
+  ///Contains the gameList at the iteration i-1
   late List databaseBackup;
   bool backupFlag = true;
   get gameList => _data;
   bool firstIterationFlag = true;
   final Connectivity _connectivity = Connectivity();
 
+  ///Change flag to notify the listeners
   void changeFlag() {
     backupFlag = !backupFlag;
   }
 
+  ///Function called when a right column item (game) needs to be inserted into the selected games list.
   addToGameList(var item) async {
     ///[path] gets the flutter-standard database path
     String path = await getDatabasesPath();
 
+    //If the application is running on Windows or Linux use sqflite_common_ffi package
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
       var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
@@ -47,6 +51,7 @@ class GameList with ChangeNotifier {
             : (item["selectedPrice"])
       });
     } else {
+      ///Else (MacOS case scenario) use the sqflite package
       //Opening the database (if the onCreate is necesasry)
       final Database database = await openDatabase(
         join(path, 'selectedGames.db'),
@@ -58,7 +63,7 @@ class GameList with ChangeNotifier {
         version: 1,
       );
 
-      ///[database.insert()] instert the chosen game into the database
+      //instert the chosen game into the database
       await database.insert("GAMES", {
         "ID": item["id"],
         "NAME": item["name"],
@@ -67,13 +72,15 @@ class GameList with ChangeNotifier {
       database.close();
     }
     hasChanged = true;
-
+    //Refresh the left column rebuilding and redrawing it
     displayedData = buildListOfGames();
+    //Notify the listeners
     notifyListeners();
     changeFlag();
     hasChanged = false;
   }
 
+  ///Remove a game from the selected games list onClick() of the corresponding button from the Dialog
   removeFromGameList(var id) async {
     String path = await getDatabasesPath();
     if (Platform.isWindows || Platform.isLinux) {
@@ -107,6 +114,7 @@ class GameList with ChangeNotifier {
     notifyListeners();
   }
 
+  ///Left column main widget containing, showing and giving functionality to the selected games.
   Widget buildListOfGames() {
     return Expanded(
         //Creation of the list.
@@ -134,7 +142,7 @@ class GameList with ChangeNotifier {
                 //Solution: restart
 
                 SteamNotificator()
-                    .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
+                    .notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
                 counter_1++;
                 if (counter_1 == _data.length - 1) {
                   firstIterationFlag = false;
@@ -142,21 +150,21 @@ class GameList with ChangeNotifier {
                 //firstIterationFlag = false;
               }
 
-              ///If there is a game that was not in [_data] at the iteration i-1, try the notify
+              //If there is a game that was not in [_data] at the iteration i-1, try the notify
 
-              ///[databasebackuo.contains()] checks for object isntance
-              ///So i forced to check the Id's with another [List] type variable [databaseIds]
+              //[databasebackuo.contains()] checks for object isntance
+              //So i forced to check the Id's with another [List] type variable [databaseIds]
               List databaseIds = [];
-              (databaseBackup as List).forEach((element) {
+              databaseBackup.forEach((element) {
                 databaseIds.add(element["ID"]);
               });
               if (!databaseIds.contains(_data[index]["ID"]) &&
                   !firstIterationFlag &&
                   counter % 2 != 0) {
                 SteamNotificator()
-                    .Notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
+                    .notify(_data[index]["ID"], _data[index]["DESIRED_PRICE"]);
               }
-
+              //Card representing the game
               return Card(
                 color: Colors.blueGrey[300],
                 //Tiles creation

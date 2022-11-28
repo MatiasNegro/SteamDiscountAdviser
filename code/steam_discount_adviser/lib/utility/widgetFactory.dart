@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-
-
+///Custom [CircularProgressIndicator]
 class WidgetFactory {
   Widget styledCircularIndicator() {
     return Container(
