@@ -47,10 +47,12 @@ class SteamRequest {
   ///accessible only by the app.
   Future<List> getSelectedGames() async {
     late String path;
+    List toReturn = [];
     if (Platform.isMacOS) {
       path = await getDatabasesPath();
     }
-    List toReturn = [];
+
+    //Windows and Linux db initialization
     sqfliteFfiInit();
 
     //If the platform is windows or linux the DB interface is given by a different package instead of the
@@ -93,11 +95,14 @@ class SteamRequest {
   ///internal database.
   Future<String> getSelectedPrice(id) async {
     late String path;
+    double toReturn;
     if (Platform.isMacOS) {
       path = await getDatabasesPath();
     }
-    double toReturn;
+
+    //Windows and Linux db intialization
     sqfliteFfiInit();
+
     //If the platform is windows or linux the DB interface is given by a different package instead of the
     //MacOS one
     if (Platform.isWindows || Platform.isLinux) {

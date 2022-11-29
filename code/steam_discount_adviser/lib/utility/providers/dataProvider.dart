@@ -33,9 +33,14 @@ class GameList with ChangeNotifier {
   ///Function called when a right column item (game) needs to be inserted into the selected games list.
   addToGameList(var item) async {
     ///[path] gets the flutter-standard database path
-    sqfliteFfiInit();
+
     late String path;
-    if (Platform.isMacOS) path = await getDatabasesPath();
+    if (Platform.isMacOS) {
+      path = await getDatabasesPath();
+    }
+
+    //Windows and Linux db initialization
+    sqfliteFfiInit();
 
     //If the application is running on Windows or Linux use sqflite_common_ffi package
     if (Platform.isWindows || Platform.isLinux) {
