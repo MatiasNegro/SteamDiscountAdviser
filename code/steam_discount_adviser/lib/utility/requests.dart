@@ -46,8 +46,12 @@ class SteamRequest {
   ///Returns the games we added to the List. Data is stored inside a sqlite3 database
   ///accessible only by the app.
   Future<List> getSelectedGames() async {
-    String path = await getDatabasesPath();
+    late String path;
+    if (Platform.isMacOS) {
+      path = await getDatabasesPath();
+    }
     List toReturn = [];
+    sqfliteFfiInit();
 
     //If the platform is windows or linux the DB interface is given by a different package instead of the
     //MacOS one
@@ -88,8 +92,12 @@ class SteamRequest {
   ///[getSelectedPrice(String id)] returns the ["SELECTED_PRICE"] field of a give [id] from the
   ///internal database.
   Future<String> getSelectedPrice(id) async {
-    String path = await getDatabasesPath();
+    late String path;
+    if (Platform.isMacOS) {
+      path = await getDatabasesPath();
+    }
     double toReturn;
+    sqfliteFfiInit();
     //If the platform is windows or linux the DB interface is given by a different package instead of the
     //MacOS one
     if (Platform.isWindows || Platform.isLinux) {
