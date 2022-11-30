@@ -60,15 +60,16 @@ class SteamRequest {
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
       var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
-      await db.execute('''
+
+      if (!db.isOpen) {
+        await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
+      }
       var query = await db.query("GAMES");
       toReturn = query.toList();
       db.close();
     } else {
-      //Getting the standard db directory
-
       //Opening the database
       final Database database = await openDatabase(
         join(path, 'selectedGames.db'),
@@ -108,9 +109,13 @@ class SteamRequest {
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
       var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
-      await db.execute('''
+
+      if (!db.isOpen) {
+        await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
+      }
+
       var query = await db.query("GAMES",
           columns: ["DESIRED_PRICE"], where: "ID = $id");
       toReturn = double.parse(query[0]["DESIRED_PRICE"].toString());

@@ -46,9 +46,13 @@ class GameList with ChangeNotifier {
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
       var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
-      await db.execute('''
+
+      //If the db is not open at this point that means it does not exist
+      if (!db.isOpen) {
+        await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
+      }
 
       await db.insert("GAMES", {
         "ID": item["id"],
@@ -93,9 +97,13 @@ class GameList with ChangeNotifier {
     if (Platform.isWindows || Platform.isLinux) {
       var databaseFactory = databaseFactoryFfi;
       var db = await databaseFactory.openDatabase(inMemoryDatabasePath);
-      await db.execute('''
+
+      if (!db.isOpen) {
+        await db.execute('''
               CREATE TABLE GAMES(ID TEXT PRIMARY KEY, NAME TEXT, DESIRED_PRICE TEXT)
               ''');
+      }
+
       await db.delete("GAMES", where: "ID = ?", whereArgs: [id]);
 
       db.close();
@@ -221,9 +229,14 @@ class GameList with ChangeNotifier {
             }),
           );
         } else {
-          //If problems with the database are found, is returned a progress indicator while the app
-          //"searches" a solution
-          return WidgetFactory().styledCircularIndicator();
+          //If the db has no data display a Text() message that invite to add a game
+          return const Center(
+            child: Text(
+              "Add a game!",
+              style: TextStyle(
+                  fontFamily: "font/RobotoMono-Regular.ttf", fontSize: 32.0),
+            ),
+          );
         }
       },
     ));
