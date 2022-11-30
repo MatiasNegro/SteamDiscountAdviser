@@ -162,7 +162,6 @@ class GameList with ChangeNotifier {
                 if (counter_1 == _data.length - 1) {
                   firstIterationFlag = false;
                 }
-                //firstIterationFlag = false;
               }
 
               //If there is a game that was not in [_data] at the iteration i-1, try the notify
