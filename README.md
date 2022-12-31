@@ -52,5 +52,5 @@ This project has been made for the Software Engineering course at UniBG
 
 
 ## ADVISE
-For other information about the project check the project plan inside the ![doc](https://github.com/MatiasNegro/SteamDiscountAdviser/blob/master/doc/Project_Plan.pdf) directory. 
+For other information about the project check the ![project plan](https://github.com/MatiasNegro/SteamDiscountAdviser/blob/master/doc/Project_Plan.pdf) inside the doc directory. 
 
