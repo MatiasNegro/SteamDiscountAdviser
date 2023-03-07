@@ -7,7 +7,7 @@ import Foundation
 
 import connectivity_plus
 import local_notifier
-import path_provider_macos
+import path_provider_foundation
 import screen_retriever
 import sqflite
 import tray_manager
