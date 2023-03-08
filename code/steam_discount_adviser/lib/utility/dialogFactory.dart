@@ -154,7 +154,7 @@ class DialogFactory {
                       width: 10,
                     ),
                     Text(
-                        "Sconto: ${gameInfo["price_overview"]["discount_percent"]}",
+                        "Sconto: ${gameInfo["price_overview"]["discount_percent"]}%",
                         style: const TextStyle(
                             fontSize: 14.0,
                             fontFamily: "/font/RobotoMono-Regular.ttf")),
