@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:provider/provider.dart';
-import 'package:steam_discount_adviser/allGamesListBuilder.dart';
+import 'package:steam_discount_adviser/utility/allGamesListBuilder.dart';
 import 'package:steam_discount_adviser/main.dart';
-import 'package:steam_discount_adviser/gameListWidgetBuilder.dart';
-import 'package:steam_discount_adviser/providers/dataProvider.dart';
-import 'package:steam_discount_adviser/SchedulerFactory.dart';
+import 'package:steam_discount_adviser/utility/gameListWidgetBuilder.dart';
+import 'package:steam_discount_adviser/utility/providers/dataProvider.dart';
+import 'package:steam_discount_adviser/utility/SchedulerFactory.dart';
 
 @GenerateMocks([SchedulerFactory])
 void main() {
